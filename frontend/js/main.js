@@ -24,7 +24,7 @@ class ThemeManager {
     const newTheme = this.currentTheme === "dark" ? "light" : "dark";
     this.setTheme(newTheme);
     this.storeTheme(newTheme);
-    this.showNotification(Switched to ${newTheme} mode);
+    this.showNotification(`Switched to ${newTheme} mode`);
 
     // Add rotation animation
     this.themeIcon.style.transform = "rotate(360deg)";
@@ -38,11 +38,11 @@ class ThemeManager {
     document.documentElement.setAttribute("data-theme", theme);
     
     // Update icon
-    this.themeIcon.textContent = theme === "dark" ? "☀" : "🌙";
+    this.themeIcon.textContent = theme === "dark" ? "☀️" : "🌙";
     
     // Update aria-label
     this.themeToggle.setAttribute("aria-label", 
-        Switch to ${theme === "dark" ? "light" : "dark"} mode);
+        `Switch to ${theme === "dark" ? "light" : "dark"} mode`);
   }
 
   getStoredTheme() {
@@ -278,7 +278,7 @@ class QuestionRenderer {
     }
 
     // Add view class to container
-    this.container.className = main-content ${view}-view;
+    this.container.className = `main-content ${view}-view`;
 
     questions.forEach((question, index) => {
       const questionCard = this.createQuestionCard(question, view);
@@ -306,7 +306,7 @@ class QuestionRenderer {
       </div>
       <div class="question-meta">
         <div class="tags">
-          ${question.tags.map(tag => <span class="tag" data-tag="${tag}">${tag}</span>).join("")}
+          ${question.tags.map(tag => `<span class="tag" data-tag="${tag}">${tag}</span>`).join("")}
         </div>
         <div class="question-stats">
           <span class="stat">
@@ -378,7 +378,7 @@ class QuestionRenderer {
     // Question title click
     const title = card.querySelector(".question-title");
     title.addEventListener("click", () => {
-      console.log(Opening question: ${question.title});
+      console.log(`Opening question: ${question.title}`);
       this.showQuestionModal(question);
     });
 
@@ -388,7 +388,7 @@ class QuestionRenderer {
       tag.addEventListener("click", (e) => {
         e.stopPropagation();
         const tagName = tag.dataset.tag;
-        console.log(Filtering by tag: ${tagName});
+        console.log(`Filtering by tag: ${tagName}`);
         window.dispatchEvent(new CustomEvent("tagSearch", { 
           detail: { tag: tagName } 
         }));
@@ -426,13 +426,13 @@ class QuestionRenderer {
   }
 
   handleVote(questionId, type) {
-    console.log(${type} vote for question ${questionId});
+    console.log(`${type} vote for question ${questionId}`);
     // In a real app, this would make an API call
-    window.themeManager.showNotification(${type === 'up' ? 'Upvoted' : 'Downvoted'} question!);
+    window.themeManager.showNotification(`${type === 'up' ? 'Upvoted' : 'Downvoted'} question!`);
   }
 
   handleBookmark(questionId) {
-    console.log(Bookmarking question ${questionId});
+    console.log(`Bookmarking question ${questionId}`);
     window.themeManager.showNotification("Question bookmarked!");
   }
 
@@ -452,8 +452,8 @@ class QuestionRenderer {
   }
 
   showUserProfile(username) {
-    console.log(Showing profile for ${username});
-    window.themeManager.showNotification(Opening ${username}'s profile...);
+    console.log(`Showing profile for ${username}`);
+    window.themeManager.showNotification(`Opening ${username}'s profile...`);
   }
 
   showQuestionModal(question) {
@@ -469,7 +469,7 @@ class QuestionRenderer {
         <div class="modal-body">
           <div class="question-meta">
             <div class="tags">
-              ${question.tags.map(tag => <span class="tag">${tag}</span>).join("")}
+              ${question.tags.map(tag => `<span class="tag">${tag}</span>`).join("")}
             </div>
             <span class="author">Asked by ${question.author} ${question.timeAgo}</span>
           </div>
@@ -597,7 +597,7 @@ class PaginationManager {
 
   createPageButton(text, enabled, active = false) {
     const button = document.createElement("button");
-    button.className = page-btn ${active ? "active" : ""};
+    button.className = `page-btn ${active ? "active" : ""}`;
     button.textContent = text;
     button.disabled = !enabled;
     return button;
@@ -822,7 +822,7 @@ class StackItApp {
   }
 
   handleFilterChange(filter) {
-    console.log(Switching to filter: ${filter});
+    console.log(`Switching to filter: ${filter}`);
     this.appState.filterQuestions(filter);
     this.updateFilterSummary();
     this.renderContent();
@@ -837,14 +837,14 @@ class StackItApp {
       input.value = searchTerm;
     });
 
-    console.log(Searching for: ${searchTerm});
+    console.log(`Searching for: ${searchTerm}`);
     
     this.appState.searchQuestions(searchTerm);
     this.updateFilterSummary();
     this.renderContent();
 
     if (searchTerm && this.appState.filteredQuestions.length === 0) {
-      console.log(No results found for "${searchTerm}");
+      console.log(`No results found for "${searchTerm}"`);
     }
   }
 
@@ -886,9 +886,9 @@ class StackItApp {
     const clearFilters = document.getElementById("clearFilters");
     
     const count = this.appState.filteredQuestions.length;
-    resultsCount.textContent = ${count} question${count !== 1 ? 's' : ''};
+    resultsCount.textContent = `${count} question${count !== 1 ? 's' : ''}`;
     
-    let filterText = sorted by ${this.appState.currentFilter};
+    let filterText = `sorted by ${this.appState.currentFilter}`;
     if (this.appState.searchQuery) {
       filterText += ` • searching "${this.appState.searchQuery}"`;
       clearFilters.style.display = "flex";
@@ -948,6 +948,115 @@ class StackItApp {
     `;
 
     this.showModal(modal);
+
+    // Rich Text Editor Functionality
+    const rteEditor = modal.querySelector('.rte-editor');
+    const rteToolbar = modal.querySelector('.rte-toolbar');
+    let savedSelection = null;
+
+    // Helper: Save/restore selection
+    function saveSelection() {
+      const sel = window.getSelection();
+      if (sel.rangeCount > 0) {
+        savedSelection = sel.getRangeAt(0);
+      }
+    }
+    function restoreSelection() {
+      if (savedSelection) {
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(savedSelection);
+      }
+    }
+
+    // Toolbar button actions
+    // Fix: Use execCommand on the focused contenteditable, and ensure selection is restored properly
+    rteToolbar.addEventListener('mousedown', e => {
+      // Prevent focus loss from editor
+      e.preventDefault();
+      if (e.target.closest('.rte-btn')) {
+        rteEditor.focus();
+        restoreSelection();
+      }
+    });
+    rteToolbar.addEventListener('click', function(e) {
+      if (e.target.closest('.rte-btn')) {
+        const btn = e.target.closest('.rte-btn');
+        const cmd = btn.dataset.cmd;
+        rteEditor.focus();
+        restoreSelection();
+        // Use setTimeout to ensure focus/selection is restored before execCommand
+        setTimeout(() => {
+          if (cmd === 'emoji') {
+            const emoji = prompt('Enter emoji: 😊');
+            if (emoji) document.execCommand('insertText', false, emoji);
+          } else if (cmd === 'createLink') {
+            const url = prompt('Enter URL:');
+            if (url) document.execCommand('createLink', false, url);
+          } else if (cmd === 'insertImage') {
+            const url = prompt('Enter image URL:');
+            if (url) document.execCommand('insertImage', false, url);
+          } else if (cmd === 'undo' || cmd === 'redo') {
+            document.execCommand(cmd);
+          } else {
+            document.execCommand(cmd, false, null);
+          }
+          saveSelection();
+        }, 0);
+      }
+    });
+
+    // Save selection on focus/blur/click
+    rteEditor.addEventListener('keyup', saveSelection);
+    rteEditor.addEventListener('mouseup', saveSelection);
+    rteEditor.addEventListener('blur', saveSelection);
+    rteEditor.addEventListener('focus', saveSelection);
+
+    // Placeholder logic
+    rteEditor.addEventListener('focus', function() {
+      if (rteEditor.textContent.trim() === 'Start writing here...') {
+        rteEditor.textContent = '';
+        rteEditor.style.color = '#222';
+      }
+    });
+    rteEditor.addEventListener('blur', function() {
+      if (rteEditor.textContent.trim() === '') {
+        rteEditor.textContent = 'Start writing here...';
+        rteEditor.style.color = '#888';
+      }
+    });
+    // Initial placeholder color
+    if (rteEditor.textContent.trim() === 'Start writing here...') {
+      rteEditor.style.color = '#888';
+    }
+
+    // On submit, copy HTML to a hidden textarea for form data
+    const form = modal.querySelector('.ask-form');
+    form.addEventListener('submit', function(e) {
+      let hidden = form.querySelector('textarea[name="questionBody"]');
+      if (!hidden) {
+        hidden = document.createElement('textarea');
+        hidden.name = 'questionBody';
+        hidden.style.display = 'none';
+        form.appendChild(hidden);
+      }
+      hidden.value = rteEditor.textContent.trim() === 'Start writing here...'
+        ? '' : rteEditor.innerHTML;
+    });
+
+    // Style the editor and toolbar
+    const rteStyle = document.createElement('style');
+    rteStyle.textContent = `
+      .rte-container { margin-top: 6px; }
+      .rte-header { padding: 0 0 6px 0; text-align: left; }
+      .rte-toolbar { border: 1.5px solid #e0d8fa; border-bottom: none; border-radius: 10px 10px 0 0; background: #f6f6fa; }
+      .rte-btn { background: #fff; border: 1px solid #e0d8fa; border-radius: 6px; padding: 5px 10px; font-size: 1.08rem; color: #7b61ff; cursor: pointer; transition: background 0.2s, box-shadow 0.2s; margin-right: 2px; }
+      .rte-btn:last-child { margin-right: 0; }
+      .rte-btn:hover, .rte-btn:focus { background: #ede9fa; box-shadow: 0 2px 8px #e0d8fa44; }
+      .rte-editor { min-height: 120px; border: 1.5px solid #bdb6f7; border-radius: 0 0 10px 10px; background: #fff; font-size: 1.08rem; color: #222; outline: none; transition: border 0.2s; box-shadow: 0 2px 8px #e0d8fa22; }
+      .rte-editor:focus { border-color: #7b61ff; box-shadow: 0 2px 12px #bdb6f744; }
+    `;
+    document.head.appendChild(rteStyle);
   }
 
   showAskQuestionModal() {
@@ -968,7 +1077,27 @@ class StackItApp {
             </div>
             <div class="form-group">
               <label for="questionBody">Body</label>
-              <textarea id="questionBody" rows="8" placeholder="Include all the information someone would need to answer your question" required></textarea>
+              <div class="rte-container">
+                <div class="rte-header">
+                  <span style="font-weight:600;color:#7b61ff;font-size:1.05rem;display:flex;align-items:center;gap:6px;">
+                    <svg width="18" height="18" style="vertical-align:middle;" fill="none" stroke="#7b61ff" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 4v16"/><path d="M16 4v16"/></svg>
+                    Professional Rich Text Editor
+                  </span>
+                </div>
+                <div class="rte-toolbar" style="display:flex;gap:8px;background:#f6f6fa;padding:10px 12px 8px 12px;border-radius:10px 10px 0 0;align-items:center;margin-bottom:0;">
+                  <button type="button" class="rte-btn" data-cmd="bold" title="Bold"><b>B</b></button>
+                  <button type="button" class="rte-btn" data-cmd="italic" title="Italic"><i>I</i></button>
+                  <button type="button" class="rte-btn" data-cmd="underline" title="Underline"><u>U</u></button>
+                  <button type="button" class="rte-btn" data-cmd="insertOrderedList" title="Numbered List">1.</button>
+                  <button type="button" class="rte-btn" data-cmd="insertUnorderedList" title="Bullet List">•</button>
+                  <button type="button" class="rte-btn" data-cmd="emoji" title="Emoji">😊</button>
+                  <button type="button" class="rte-btn" data-cmd="createLink" title="Insert Link">🔗</button>
+                  <button type="button" class="rte-btn" data-cmd="insertImage" title="Insert Image">🖼️</button>
+                  <button type="button" class="rte-btn" data-cmd="undo" title="Undo">↺</button>
+                  <button type="button" class="rte-btn" data-cmd="redo" title="Redo">↻</button>
+                </div>
+                <div id="questionBody" class="rte-editor" contenteditable="true" style="min-height:120px;padding:16px 14px;border:2px solid #bdb6f7;border-radius:0 0 10px 10px;background:#fff;font-size:1.08rem;color:#222;outline:none;transition:border 0.2s;">Start writing here...</div>
+              </div>
             </div>
             <div class="form-group">
               <label for="questionTags">Tags</label>
@@ -976,8 +1105,8 @@ class StackItApp {
               <small>Add up to 5 tags to describe what your question is about</small>
             </div>
             <div class="form-actions">
-              <button type="button" class="btn-secondary modal-close">Cancel</button>
-              <button type="submit" class="btn-primary">Post Question</button>
+              <button type="button" class="btn-secondary modal-close" style="background: #fff; color: #4f8cff; border: 2px solid #4f8cff; padding: 22px 58px; border-radius: 8px; font-weight: 600; box-shadow: none; transition: all 0.2s; font-size: 1.15rem; letter-spacing: 0.5px;">Cancel</button>
+              <button type="submit" class="btn-primary" style="background: linear-gradient(90deg, #4f8cff 0%, #38e8fc 100%); color: #fff; border: none; padding: 12px 28px; border-radius: 8px; font-weight: 600; box-shadow: 0 2px 8px rgba(79,140,255,0.15); transition: all 0.2s; font-size: 1.15rem; letter-spacing: 0.5px;">Post Question</button>
             </div>
           </form>
         </div>
@@ -1070,9 +1199,9 @@ function formatTimeAgo(date) {
   const diffInSeconds = Math.floor((now - date) / 1000);
 
   if (diffInSeconds < 60) return "just now";
-  if (diffInSeconds < 3600) return ${Math.floor(diffInSeconds / 60)} min ago;
-  if (diffInSeconds < 86400) return ${Math.floor(diffInSeconds / 3600)} hours ago;
-  return ${Math.floor(diffInSeconds / 86400)} days ago;
+  if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} min ago`;
+  if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
+  return `${Math.floor(diffInSeconds / 86400)} days ago`;
 }
 
 function debounce(func, wait) {
