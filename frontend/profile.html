@@ -1,0 +1,1228 @@
+<html lang="en" data-theme="light"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StackIt User Management - Enhanced Profile</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --primary-hover: #2563eb;
+            --primary-light: #dbeafe;
+            --secondary-color: #64748b;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            --purple-color: #8b5cf6;
+            
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --border-color: #e2e8f0;
+            --border-hover: #cbd5e1;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --border-hover: #475569;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.3), 0 8px 10px -6px rgb(0 0 0 / 0.3);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: all 0.3s ease;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 0;
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .theme-toggle {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .theme-toggle:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--border-hover);
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 2rem;
+            flex: 1;
+        }
+
+        .card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--shadow-xl);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-xl);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-subtitle {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .profile-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .profile-avatar {
+            width: 128px;
+            height: 128px;
+            border-radius: 50%;
+            border: 4px solid var(--primary-color);
+            object-fit: cover;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s ease;
+        }
+
+        .profile-avatar:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .profile-info {
+            max-width: 600px;
+        }
+
+        .profile-name {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-username {
+            font-size: 1.125rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .profile-bio {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+
+        .profile-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            justify-content: center;
+            font-size: 0.875rem;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+        }
+
+        .meta-item:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--border-hover);
+        }
+
+        .meta-item i {
+            color: var(--primary-color);
+        }
+
+        .grid {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .grid-cols-1 { grid-template-columns: repeat(1, 1fr); }
+        .grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+        .grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+        .grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+        .stat-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.5rem;
+        }
+
+        .stat-content h3 {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .stat-content p {
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover .stat-icon {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .stat-reputation { color: var(--primary-color); }
+        .stat-questions { color: var(--success-color); }
+        .stat-answers { color: var(--purple-color); }
+        .stat-badges { color: var(--warning-color); }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-top: 1rem;
+        }
+
+        .chart-small {
+            height: 200px;
+        }
+
+        .heatmap-container {
+            margin-top: 1.5rem;
+        }
+
+        .heatmap-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 3px;
+            margin-bottom: 1rem;
+        }
+
+        .heatmap-cell {
+            width: 14px;
+            height: 14px;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .heatmap-cell:hover {
+            transform: scale(1.3);
+            box-shadow: 0 0 0 2px var(--primary-color);
+        }
+
+        .heatmap-legend {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .legend-scale {
+            display: flex;
+            gap: 3px;
+        }
+
+        .legend-cell {
+            width: 14px;
+            height: 14px;
+            border-radius: 3px;
+        }
+
+        .activity-0 { background-color: #f1f5f9; }
+        .activity-1 { background-color: #dbeafe; }
+        .activity-2 { background-color: #bfdbfe; }
+        .activity-3 { background-color: #93c5fd; }
+        .activity-4 { background-color: #60a5fa; }
+
+        [data-theme="dark"] .activity-0 { background-color: #334155; }
+        [data-theme="dark"] .activity-1 { background-color: #1e40af; }
+        [data-theme="dark"] .activity-2 { background-color: #1d4ed8; }
+        [data-theme="dark"] .activity-3 { background-color: #2563eb; }
+        [data-theme="dark"] .activity-4 { background-color: #3b82f6; }
+
+        .badges-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .badge {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .badge:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .badge-outline {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        .badge-outline:hover {
+            background: var(--bg-secondary);
+            border-color: var(--border-hover);
+        }
+
+        .education-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .education-item:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--border-hover);
+        }
+
+        .education-icon {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-top: 0.125rem;
+        }
+
+        .education-content h4 {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .education-content p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .loading, .error {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--border-color);
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1.5rem;
+        }
+
+        .error {
+            color: var(--error-color);
+        }
+
+        .retry-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: all 0.2s ease;
+            font-weight: 600;
+        }
+
+        .retry-btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .toast-container {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .toast {
+            background: var(--bg-primary);
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            border-radius: 12px;
+            box-shadow: var(--shadow-xl);
+            padding: 1rem 1.5rem;
+            font-size: 0.875rem;
+            min-width: 280px;
+            max-width: 400px;
+            transition: all 0.3s ease;
+        }
+
+        .level-info-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            padding: 0.5rem;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .level-info-btn:hover {
+            background: var(--bg-secondary);
+            transform: scale(1.1);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (min-width: 768px) {
+            .profile-header {
+                flex-direction: row;
+                text-align: left;
+            }
+
+            .profile-info {
+                text-align: left;
+            }
+
+            .profile-meta {
+                justify-content: flex-start;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .card {
+                padding: 1.5rem;
+            }
+
+            .grid-cols-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .grid-cols-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .heatmap-grid {
+                grid-template-columns: repeat(8, 1fr);
+            }
+
+            .heatmap-cell, .legend-cell {
+                width: 12px;
+                height: 12px;
+            }
+
+            .profile-meta {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .header-content {
+                padding: 0 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .grid-cols-4 {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-name {
+                font-size: 1.5rem;
+            }
+
+            .stat-content p {
+                font-size: 2rem;
+            }
+
+            .stat-icon {
+                font-size: 2rem;
+            }
+
+            .toast-container {
+                top: 1rem;
+                right: 1rem;
+                left: 1rem;
+            }
+
+            .toast {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="#" class="logo">StackIt</a>
+            <button class="theme-toggle" onclick="toggleTheme()">
+                <i id="theme-icon" class="fas fa-moon"></i>
+                <span id="theme-text">Dark Mode</span>
+            </button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div id="loadingState" class="loading" style="display: none;">
+            <div class="spinner"></div>
+            <p>Loading your profile...</p>
+        </div>
+
+        <div id="errorState" class="error" style="display: block;">
+            <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+            <p id="errorMessage">No user logged in. Please log in to view your profile.</p>
+            <button class="retry-btn" onclick="loadProfile()">
+                <i class="fas fa-redo"></i>
+                Try Again
+            </button>
+        </div>
+
+        <div id="profileContent" style="display: none;" class="fade-in">
+            <div class="card" style="margin-bottom: 2rem;">
+                <div class="profile-header">
+                    <img id="profileAvatar" class="profile-avatar" src="/placeholder.svg?height=128&amp;width=128" alt="Profile Picture">
+                    <div class="profile-info">
+                        <h1 class="profile-name" id="profileName">Alex Johnson</h1>
+                        <p class="profile-username" id="profileUsername">@alexj_dev</p>
+                        <p class="profile-bio" id="profileBio">Full-stack developer passionate about React and Node.js. Always learning and sharing knowledge with the community.</p>
+                        <div class="profile-meta">
+                            <div class="meta-item">
+                                <i class="fas fa-envelope"></i>
+                                <span id="profileEmail">alex.johnson@email.com</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-calendar"></i>
+                                <span id="profileAge">28 years old</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-chart-line"></i>
+                                <span>Level: <span id="profileLevel">Advanced</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-4" style="margin-bottom: 2rem;">
+                <div class="card">
+                    <div class="stat-card">
+                        <div class="stat-content">
+                            <h3>Reputation</h3>
+                            <p class="stat-reputation" id="reputationStat">580</p>
+                        </div>
+                        <i class="fas fa-award stat-icon stat-reputation"></i>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="stat-card">
+                        <div class="stat-content">
+                            <h3>Questions</h3>
+                            <p class="stat-questions" id="questionsStat">45</p>
+                        </div>
+                        <i class="fas fa-question-circle stat-icon stat-questions"></i>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="stat-card">
+                        <div class="stat-content">
+                            <h3>Answers</h3>
+                            <p class="stat-answers" id="answersStat">78</p>
+                        </div>
+                        <i class="fas fa-check-circle stat-icon stat-answers"></i>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="stat-card">
+                        <div class="stat-content">
+                            <h3>Badges</h3>
+                            <p class="stat-badges" id="badgesStat">5</p>
+                        </div>
+                        <i class="fas fa-medal stat-icon stat-badges"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2" style="margin-bottom: 2rem;">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i class="fas fa-chart-line"></i>
+                            Reputation Growth
+                        </h2>
+                        <p class="card-subtitle">Your reputation progress over time</p>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="reputationChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header" style="display: flex; align-items: center; justify-content: space-between;">
+                        <div>
+                            <h2 class="card-title">
+                                <i class="fas fa-trophy"></i>
+                                Level Progress
+                            </h2>
+                            <p class="card-subtitle">Your current level and progress</p>
+                        </div>
+                        <button class="level-info-btn" title="Level System Info" onclick="showLevelInfo()">
+                            <i class="fas fa-info-circle"></i>
+                        </button>
+                    </div>
+                    <div class="chart-container chart-small">
+                        <canvas id="levelChart"></canvas>
+                    </div>
+                    <p id="levelProgressText" style="text-align: center; font-size: 0.875rem; color: var(--text-secondary); margin-top: 1rem;">
+                        Progress to next level
+                    </p>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 2rem;">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-calendar-alt"></i>
+                        Activity Heatmap
+                    </h2>
+                    <p class="card-subtitle">Your daily activity over the past year</p>
+                </div>
+                <div class="heatmap-container">
+                    <div class="heatmap-grid" id="heatmapGrid"></div>
+                    <div class="heatmap-legend">
+                        <span>Less</span>
+                        <div class="legend-scale">
+                            <div class="legend-cell activity-0"></div>
+                            <div class="legend-cell activity-1"></div>
+                            <div class="legend-cell activity-2"></div>
+                            <div class="legend-cell activity-3"></div>
+                            <div class="legend-cell activity-4"></div>
+                        </div>
+                        <span>More</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i class="fas fa-medal"></i>
+                            Achievements
+                        </h2>
+                        <p class="card-subtitle">Badges you've earned</p>
+                    </div>
+                    <div class="badges-container" id="badgesContainer">
+                        <span class="badge">
+                            <i class="fas fa-lightbulb"></i>
+                            Problem Solver
+                        </span>
+                        <span class="badge">
+                            <i class="fas fa-hands-helping"></i>
+                            Helpful
+                        </span>
+                        <span class="badge">
+                            <i class="fas fa-star"></i>
+                            Expert
+                        </span>
+                        <span class="badge">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                            Mentor
+                        </span>
+                        <span class="badge">
+                            <i class="fas fa-crown"></i>
+                            Top Contributor
+                        </span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i class="fas fa-graduation-cap"></i>
+                            Education &amp; Experience
+                        </h2>
+                        <p class="card-subtitle">Your background and qualifications</p>
+                    </div>
+                    <div id="educationExperienceContent"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script>
+        let charts = {};
+        
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('stackit-theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeToggle(savedTheme);
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('stackit-theme', newTheme);
+            updateThemeToggle(newTheme);
+            
+            setTimeout(() => {
+                updateChartsForTheme(newTheme);
+            }, 100);
+        }
+
+        function updateThemeToggle(theme) {
+            const icon = document.getElementById('theme-icon');
+            const text = document.getElementById('theme-text');
+            
+            if (theme === 'dark') {
+                icon.className = 'fas fa-sun';
+                text.textContent = 'Light Mode';
+            } else {
+                icon.className = 'fas fa-moon';
+                text.textContent = 'Dark Mode';
+            }
+        }
+
+        function getThemeColors() {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            return {
+                text: isDark ? '#f1f5f9' : '#1e293b',
+                textSecondary: isDark ? '#cbd5e1' : '#64748b',
+                grid: isDark ? '#334155' : '#e2e8f0',
+                background: isDark ? '#1e293b' : '#ffffff'
+            };
+        }
+
+        function showLoading() {
+            document.getElementById('loadingState').style.display = 'block';
+            document.getElementById('errorState').style.display = 'none';
+            document.getElementById('profileContent').style.display = 'none';
+        }
+
+        function showError(message) {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('errorState').style.display = 'block';
+            document.getElementById('profileContent').style.display = 'none';
+            document.getElementById('errorMessage').textContent = message;
+        }
+
+        function initializeCharts(data) {
+            const colors = getThemeColors();
+            
+            const reputationCtx = document.getElementById('reputationChart').getContext('2d');
+            charts.reputation = new Chart(reputationCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Reputation',
+                        data: [120, 180, 240, 320, 450, data && data.reputation ? data.reputation : 580],
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#3b82f6',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: colors.grid
+                            },
+                            ticks: {
+                                color: colors.textSecondary
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: colors.grid
+                            },
+                            ticks: {
+                                color: colors.textSecondary
+                            }
+                        }
+                    }
+                }
+            });
+
+            const answers = data && data.noOfAnswers ? data.noOfAnswers : 0;
+            const levelThresholds = [0, 3, 6, 10, 15, 21];
+            let level = 1;
+            for (let i = 1; i < levelThresholds.length; i++) {
+                if (answers >= levelThresholds[i]) level = i + 1;
+                else break;
+            }
+            if (level > 6) level = 6;
+            let nextLevel = level < 6 ? level + 1 : 6;
+            let currentThreshold = levelThresholds[level - 1];
+            let nextThreshold = level < 6 ? levelThresholds[level] : levelThresholds[5];
+            let progress = level < 6 ? ((answers - currentThreshold) / (nextThreshold - currentThreshold)) * 100 : 100;
+            if (progress < 0) progress = 0;
+            if (progress > 100) progress = 100;
+
+            const levelText = `Level ${level}`;
+            const profileLevelElem = document.getElementById('profileLevel');
+            if (profileLevelElem) profileLevelElem.textContent = levelText;
+
+            const levelProgressText = document.getElementById('levelProgressText');
+            if (levelProgressText) {
+                if (level < 6) {
+                    levelProgressText.textContent = `Answered ${answers} question${answers === 1 ? '' : 's'} — ${Math.round(progress)}% to Level ${nextLevel} (${nextThreshold - answers} more)`;
+                } else {
+                    levelProgressText.textContent = `Max level reached! (${answers} answers)`;
+                }
+            }
+
+            const levelCtx = document.getElementById('levelChart').getContext('2d');
+            if (charts.level) charts.level.destroy();
+            charts.level = new Chart(levelCtx, {
+                type: 'doughnut',
+                data: {
+                    datasets: [{
+                        data: [progress, 100 - progress],
+                        backgroundColor: ['#3b82f6', colors.grid],
+                        borderWidth: 0,
+                        cutout: '75%'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                },
+                plugins: [{
+                    beforeDraw: function(chart) {
+                        const width = chart.width;
+                        const height = chart.height;
+                        const ctx = chart.ctx;
+                        ctx.restore();
+                        const fontSize = (height / 100).toFixed(2);
+                        ctx.font = `bold ${fontSize}em sans-serif`;
+                        ctx.textBaseline = 'middle';
+                        ctx.fillStyle = colors.text;
+                        const text = `L${level}`;
+                        const textX = Math.round((width - ctx.measureText(text).width) / 2);
+                        const textY = height / 2;
+                        ctx.fillText(text, textX, textY);
+                        ctx.save();
+                    }
+                }]
+            });
+        }
+
+        async function showLevelInfo() {
+            showToast(
+                `<strong>Level System</strong><br>
+                Level 1: 0-2 answers<br>
+                Level 2: 3-5 answers<br>
+                Level 3: 6-9 answers<br>
+                Level 4: 10-14 answers<br>
+                Level 5: 15-20 answers<br>
+                Level 6: 21+ answers (max)`
+            );
+        }
+
+        function showToast(message) {
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+            
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = message;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '1';
+                toast.style.transform = 'translateY(0)';
+            }, 10);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(-20px)';
+                setTimeout(() => {
+                    if (toast.parentNode) toast.parentNode.removeChild(toast);
+                }, 300);
+            }, 4000);
+        }
+
+        function showProfile(data) {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('errorState').style.display = 'none';
+            document.getElementById('profileContent').style.display = 'block';
+
+            updateProfileData(data);
+            renderEducationExperience(data);
+
+            setTimeout(() => {
+                initializeCharts(data);
+                generateDynamicHeatmap(data);
+            }, 0);
+        }
+
+        function renderEducationExperience(data) {
+            const container = document.getElementById('educationExperienceContent');
+            let html = '';
+            let hasAny = false;
+            
+            if (data.schoolName || data.studentClass) {
+                hasAny = true;
+                html += `<div class="education-item">
+                    <i class="fas fa-school education-icon"></i>
+                    <div class="education-content">
+                        <h4>School</h4>
+                        <p><strong>Name:</strong> ${data.schoolName || 'N/A'}</p>
+                        <p><strong>Class:</strong> ${data.studentClass || 'N/A'}</p>
+                    </div>
+                </div>`;
+            }
+            
+            if (data.collegeName || data.course) {
+                hasAny = true;
+                html += `<div class="education-item">
+                    <i class="fas fa-graduation-cap education-icon"></i>
+                    <div class="education-content">
+                        <h4>College</h4>
+                        <p><strong>Name:</strong> ${data.collegeName || 'N/A'}</p>
+                        <p><strong>Course:</strong> ${data.course || 'N/A'}</p>
+                        <p><strong>Duration:</strong> ${data.startYear || 'N/A'} - ${data.endYear || 'N/A'}</p>
+                    </div>
+                </div>`;
+            }
+            
+            if (data.companyName || data.yearsOfExperience) {
+                hasAny = true;
+                html += `<div class="education-item">
+                    <i class="fas fa-building education-icon"></i>
+                    <div class="education-content">
+                        <h4>Professional Experience</h4>
+                        <p><strong>Company:</strong> ${data.companyName || 'N/A'}</p>
+                        <p><strong>Experience:</strong> ${data.yearsOfExperience || 0} years</p>
+                    </div>
+                </div>`;
+            }
+            
+            if (!hasAny) {
+                html = '<div class="education-item"><div class="education-content"><p>No education or professional information available.</p></div></div>';
+            }
+            
+            container.innerHTML = html;
+        }
+
+        function generateDynamicHeatmap(data) {
+            const heatmapGrid = document.getElementById('heatmapGrid');
+            heatmapGrid.innerHTML = '';
+            
+            let activityArr = [];
+            if (data && Array.isArray(data.activityHeatmap) && data.activityHeatmap.length === 84) {
+                activityArr = data.activityHeatmap;
+            } else {
+                for (let i = 0; i < 84; i++) {
+                    activityArr.push(Math.floor(Math.random() * 5));
+                }
+            }
+            
+            for (let i = 0; i < 84; i++) {
+                const cell = document.createElement('div');
+                const activity = activityArr[i];
+                cell.className = `heatmap-cell activity-${activity}`;
+                cell.title = `Day ${i + 1}: ${activity} activities`;
+                heatmapGrid.appendChild(cell);
+            }
+        }
+
+        function updateProfileData(data) {
+            if (data.profilePic) {
+                document.getElementById('profileAvatar').src = data.profilePic;
+            }
+            
+            document.getElementById('profileName').textContent = data.name || 'Unknown User';
+            document.getElementById('profileUsername').textContent = `@${data.username || 'unknown'}`;
+            document.getElementById('profileBio').textContent = data.bio || 'No bio available';
+            document.getElementById('profileEmail').textContent = data.email || 'Not provided';
+            document.getElementById('profileAge').textContent = data.age ? `${data.age} years old` : 'Age not provided';
+            document.getElementById('profileLevel').textContent = data.level || 'Beginner';
+            
+            document.getElementById('reputationStat').textContent = data.reputation || 0;
+            document.getElementById('questionsStat').textContent = data.noOfQuestions || 0;
+            document.getElementById('answersStat').textContent = data.noOfAnswers || 0;
+            document.getElementById('badgesStat').textContent = Array.isArray(data.badges) ? data.badges.length : 0;
+            
+            const badgesContainer = document.getElementById('badgesContainer');
+            if (Array.isArray(data.badges) && data.badges.length > 0) {
+                badgesContainer.innerHTML = data.badges.map(badge => 
+                    `<span class="badge">
+                        <i class="fas fa-medal"></i>
+                        ${badge}
+                    </span>`
+                ).join('');
+            } else {
+                badgesContainer.innerHTML = '<span class="badge badge-outline">No badges yet</span>';
+            }
+        }
+
+        function updateChartsForTheme(theme) {
+            const colors = getThemeColors();
+            
+            Object.values(charts).forEach(chart => {
+                if (chart.options.scales) {
+                    if (chart.options.scales.x) {
+                        chart.options.scales.x.grid.color = colors.grid;
+                        chart.options.scales.x.ticks.color = colors.textSecondary;
+                    }
+                    if (chart.options.scales.y) {
+                        chart.options.scales.y.grid.color = colors.grid;
+                        chart.options.scales.y.ticks.color = colors.textSecondary;
+                    }
+                }
+                
+                if (chart.options.plugins && chart.options.plugins.legend) {
+                    chart.options.plugins.legend.labels.color = colors.text;
+                }
+                
+                chart.update();
+            });
+        }
+
+        async function loadProfile() {
+            try {
+                showLoading();
+                
+                let data = null;
+                let username = localStorage.getItem('stackit_username') || '';
+                let localProfile = null;
+                
+                try {
+                    localProfile = JSON.parse(localStorage.getItem('stackit_profile'));
+                } catch (e) { 
+                    localProfile = null; 
+                }
+                
+                if (localProfile && localProfile.username && localProfile.username === username) {
+                    data = localProfile;
+                    showProfile(data);
+                    return;
+                } else {
+                    if (!username) {
+                        showError('No user logged in. Please log in to view your profile.');
+                        return;
+                    }
+                    
+                    const baseUrl = 'http://192.168.137.1:8080';
+                    const apiBase = baseUrl + '/api/users';
+                    let errorMsg = '';
+                    
+                    try {
+                        const res = await fetch(`${baseUrl}/school/${encodeURIComponent(username)}`);
+                        if (res.ok) {
+                            data = await res.json();
+                        } else {
+                            throw new Error('Not a school user');
+                        }
+                    } catch (e) {
+                        try {
+                            const res = await fetch(`${baseUrl}/college/${encodeURIComponent(username)}`);
+                            if (res.ok) {
+                                data = await res.json();
+                            } else {
+                                throw new Error('Not a college user');
+                            }
+                        } catch (e2) {
+                            try {
+                                const res = await fetch(`${apiBase}/${encodeURIComponent(username)}`);
+                                if (res.ok) {
+                                    data = await res.json();
+                                } else {
+                                    throw new Error(`Failed to load profile (Status: ${res.status})`);
+                                }
+                            } catch (e3) {
+                                errorMsg = e3.message || 'Failed to load profile. Please try again.';
+                            }
+                        }
+                    }
+                    
+                    if (data) {
+                        try {
+                            const profileRes = await fetch(`${apiBase}/profile/${encodeURIComponent(username)}`);
+                            if (profileRes.ok) {
+                                const profileData = await profileRes.json();
+                                if (profileData.email) data.email = profileData.email;
+                                if (profileData.bio) data.bio = profileData.bio;
+                                if (profileData.age) data.age = profileData.age;
+                            }
+                        } catch (e) {
+                        }
+                        
+                        showProfile(data);
+                    } else {
+                        showError(errorMsg || 'Failed to load profile. Please try again.');
+                    }
+                }
+            } catch (error) {
+                showError('Failed to load profile. Please try again.');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeTheme();
+            loadProfile();
+        });
+    </script>
+
+</body></html>
