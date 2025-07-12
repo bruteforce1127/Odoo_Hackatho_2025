@@ -211,9 +211,7 @@
 
         <!-- Main Content -->
         <main class="main-content" id="mainContent">
-            <h2>All Questions</h2>
-            <button id="fetchAll">Fetch All Questions</button>
-            <div id="allQuestionsList"></div>
+            <!-- Questions will be dynamically loaded here -->
         </main>
 
         <!-- Ask Question Modal -->
@@ -286,30 +284,230 @@
         </svg>
     </button>
 
+    <script src="/js/main.js"></script>
     <script>
-    // Simple All Questions logic
+    // Navbar login/avatar logic
+    function renderNavbarUser() {
+        const userArea = document.getElementById('navbarUserArea');
+        if (!userArea) return;
+        const username = localStorage.getItem('stackit_username');
+        if (username) {
+            // Logged in: show avatar
+            let profilePic = null;
+            try {
+                const profile = JSON.parse(localStorage.getItem('stackit_profile'));
+                if (profile && profile.profilePic) profilePic = profile.profilePic;
+            } catch {}
+            userArea.innerHTML = `<button id="navbarAvatarBtn" title="Profile" style="background:none;border:none;cursor:pointer;padding:0;margin-left:10px;">
+                <img src="${profilePic ? profilePic : 'https://ui-avatars.com/api/?name=' + encodeURIComponent(username) + '&background=667eea&color=fff&size=48'}" alt="avatar" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid #667eea;vertical-align:middle;">
+            </button>`;
+            document.getElementById('navbarAvatarBtn').onclick = () => { window.location.href = 'profile.html'; };
+        } else {
+            // Not logged in: show login button
+            userArea.innerHTML = `<button class="login-btn" id="navbarLoginBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+                    <polyline points="10,17 15,12 10,7"/>
+                    <line x1="15" y1="12" x2="3" y2="12"/>
+                </svg>
+                Login
+            </button>`;
+            document.getElementById('navbarLoginBtn').onclick = () => { window.location.href = 'login.html'; };
+        }
+    }
+
+    // Q&A logic
     const API = 'http://192.168.137.16:8080/api';
-    document.getElementById('fetchAll').onclick = async () => {
-      const res = await fetch(`${API}/questions`);
-      const questions = await res.json();
-      const container = document.getElementById('allQuestionsList');
-      container.innerHTML = '';
-      if (!questions.length) {
-        container.innerHTML = '<p>No questions found.</p>';
-        return;
-      }
-      questions.forEach(q => {
-        const div = document.createElement('div');
-        div.className = 'question';
-        div.innerHTML = `
-          <h4>${q.title} (ID: ${q.id})</h4>
-          <p>${q.description}</p>
-          <p><strong>By:</strong> ${q.username} | <strong>Upvotes:</strong> ${q.upvotes} | <strong>Downvotes:</strong> ${q.downvotes}</p>
-          <p><strong>Created:</strong> ${q.createdAt ? new Date(q.createdAt).toLocaleString() : ''}</p>
-        `;
-        container.appendChild(div);
-      });
-    };
+
+    // Modal logic
+    function showAskModal() {
+        document.getElementById('askModal').style.display = 'flex';
+    }
+    function hideAskModal() {
+        document.getElementById('askModal').style.display = 'none';
+        document.getElementById('askForm').reset();
+        document.getElementById('ask-result').textContent = '';
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        renderNavbarUser();
+        // Hide loading screen
+        var loading = document.getElementById('loadingScreen');
+        if (loading) loading.style.display = 'none';
+
+        document.querySelector('.ask-btn').onclick = function() { showAskModal(); };
+        document.getElementById('fabBtn').onclick = function() { showAskModal(); };
+        document.getElementById('closeAskModal').onclick = hideAskModal;
+        document.getElementById('askModal').onclick = function(e) { if (e.target === this) hideAskModal(); };
+
+        // Ask form submit
+        document.getElementById('askForm').onsubmit = async e => {
+            e.preventDefault();
+            const q = {
+                username: localStorage.getItem('stackit_username') || '',
+                title: document.getElementById('ask-title').value,
+                description: document.getElementById('ask-desc').value
+            };
+            const res = await fetch(`${API}/questions`, {
+
+                method: 'POST',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify(q)
+            });
+            const data = await res.json();
+            document.getElementById('ask-result').textContent =
+                data.id ? `Created Q#${data.id}` : 'Error creating question';
+            if (data.id) {
+                // Optimistically add the new question to the frontend
+                const main = document.getElementById('mainContent');
+                // If not already showing the list, reload
+                if (!main || !main.querySelector('.question-card')) {
+                    setTimeout(hideAskModal, 1000);
+                    loadQuestions();
+                    return;
+                }
+                // Build the new question object
+                const newQ = {
+                    id: data.id,
+                    title: q.title,
+                    description: q.description,
+                    username: q.username,
+                    upvotes: 0,
+                    downvotes: 0,
+                    answerIds: []
+                };
+                // Prepend the new question card
+                main.innerHTML = renderQuestionCard(newQ) + main.innerHTML;
+                setTimeout(hideAskModal, 1000);
+            }
+        };
+
+        // Load questions on page load
+        loadQuestions();
+    });
+
+    // Load all questions (simple newest first)
+    async function loadQuestions() {
+        const main = document.getElementById('mainContent');
+        main.innerHTML = '<div style="text-align:center;padding:2rem;">Loading questions…</div>';
+        let res;
+        try {
+            res = await fetch(`${API}/questions`);
+        } catch {
+            main.innerHTML = '<div style="color:red;text-align:center;padding:2rem;">Failed to load questions.</div>';
+            return;
+        }
+        if (!res.ok) {
+            main.innerHTML = '<div style="color:red;text-align:center;padding:2rem;">Failed to load questions.</div>';
+            return;
+        }
+        const arr = await res.json();
+        if (!arr.length) {
+            main.innerHTML = '<div style="text-align:center;padding:2rem;">No questions yet.</div>';
+            return;
+        }
+        main.innerHTML = arr.map(q => renderQuestionCard(q)).join('');
+        // Attach click events
+        arr.forEach(q => {
+            document.getElementById('qcard-' + q.id).onclick = () => showQuestionDetail(q.id);
+        });
+    }
+
+    // Render a question card
+    function renderQuestionCard(q) {
+        return `<div class="question-card" id="qcard-${q.id}" style="cursor:pointer;border:1px solid #e2e8f0;border-radius:8px;padding:1.2rem 1rem;margin-bottom:1.2rem;background:#fff;box-shadow:0 2px 8px #0001;transition:.15s;">
+            <div style="font-size:1.1rem;font-weight:600;color:#3b82f6;">${q.title}</div>
+            <div style="color:#64748b;margin:.3rem 0 0.7rem 0;">${q.description.length > 120 ? q.description.slice(0,120)+'…' : q.description}</div>
+            <div style="font-size:.95rem;color:#888;">By <b>${q.username}</b> | <span class="votes">👍${q.upvotes} 👎${q.downvotes}</span> | <span style="color:#aaa;">${q.answerIds.length} answers</span></div>
+        </div>`;
+    }
+
+    // Show question detail view
+    async function showQuestionDetail(qid) {
+        const main = document.getElementById('mainContent');
+        main.innerHTML = '<div style="text-align:center;padding:2rem;">Loading…</div>';
+        let res = await fetch(`${API}/questions/${qid}`);
+        if (!res.ok) {
+            main.innerHTML = '<div style="color:red;text-align:center;padding:2rem;">Question not found.</div>';
+            return;
+        }
+        const q = await res.json();
+        let html = `<div class="question-detail" style="background:#fff;border-radius:10px;padding:2rem 1.5rem;box-shadow:0 2px 8px #0001;max-width:700px;margin:2rem auto;">
+            <button onclick="loadQuestions()" style="background:none;border:none;color:#3b82f6;font-size:1.1rem;float:right;cursor:pointer;">&larr; Back</button>
+            <h2 style="margin-bottom:.5rem;">${q.title}</h2>
+            <div style="color:#64748b;margin-bottom:1rem;">${q.description}</div>
+            <div style="font-size:.97rem;color:#888;margin-bottom:.7rem;">By <b>${q.username}</b> | <span class="votes">👍${q.upvotes} 👎${q.downvotes}</span></div>
+            <button class="btn-inline" onclick="voteQ(${q.id},'up')">Upvote</button>
+            <button class="btn-inline" onclick="voteQ(${q.id},'down')">Downvote</button>
+            <hr style="margin:1.5rem 0;">
+            <h3>Answers</h3>
+            <div id="answersList">`;
+        if (q.answerIds.length) {
+            for (let aid of q.answerIds) {
+                html += `<div class="answer" id="ans-${aid}" style="border-bottom:1px solid #eee;padding:.7rem 0;">Loading answer ${aid}…</div>`;
+            }
+        } else {
+            html += '<p>No answers yet.</p>';
+        }
+        html += `</div>
+            <div style="margin-top:2rem;">
+                <h4>Post an Answer</h4>
+                <form id="answerForm">
+                    <input type="hidden" id="a-qid" value="${q.id}">
+                    <!-- Username field removed: use logged-in user -->
+                    <label for="a-text">Answer</label>
+                    <textarea id="a-text" rows="3" required style="margin-bottom:.5rem;"></textarea>
+                    <button type="submit" class="btn btn-primary">Submit Answer</button>
+                </form>
+                <div id="a-create-result" style="margin-top:.5rem;font-size:.95rem;"></div>
+            </div>
+        </div>`;
+        main.innerHTML = html;
+        // Fetch and render answers
+        for (let aid of q.answerIds) {
+            let r = await fetch(`${API}/answers/${aid}`);
+            if (r.ok) {
+                let a = await r.json();
+                document.getElementById(`ans-${aid}`).innerHTML = `
+                    <p>${a.ans}</p>
+                    <p style="color:#888;font-size:.95rem;"><b>${a.username}</b> | <span class="votes">👍${a.upvotes} 👎${a.downvotes}</span></p>
+                    <button class="btn-inline" onclick="voteA(${a.id},'up')">Upvote</button>
+                    <button class="btn-inline" onclick="voteA(${a.id},'down')">Downvote</button>
+                `;
+            }
+        }
+        // Answer form submit
+        document.getElementById('answerForm').onsubmit = async e => {
+            e.preventDefault();
+            const a = {
+                questionId: parseInt(document.getElementById('a-qid').value, 10),
+                username: localStorage.getItem('stackit_username') || '',
+                ans: document.getElementById('a-text').value
+            };
+            const res = await fetch(`${API}/answers`, {
+                method: 'POST',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify(a)
+            });
+            const data = await res.json();
+            document.getElementById('a-create-result').textContent =
+                data.id ? `Created A#${data.id}` : 'Error posting answer';
+            if (data.id) showQuestionDetail(q.id);
+            document.getElementById('answerForm').reset();
+        };
+    }
+
+    // Voting logic
+    window.voteQ = async function(id, type) {
+        await fetch(`${API}/questions/${id}/votes?type=${type}`, {method:'PATCH'});
+        showQuestionDetail(id);
+    }
+    window.voteA = async function(id, type) {
+        await fetch(`${API}/answers/${id}/votes?type=${type}`, {method:'PATCH'});
+        // Find current question id from mainContent
+        const main = document.getElementById('mainContent');
+        const qid = main.querySelector('input#a-qid')?.value;
+        if (qid) showQuestionDetail(qid);
+    }
     </script>
 </body>
 </html>
