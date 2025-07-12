@@ -25,7 +25,7 @@ public class UserQuestionsAndAnswersModel {
     private int noOfAnswers;
     private String level;
     @ElementCollection
-    private List<String> questionsAsked;
+    private List<Long> questionsIds;
     @ElementCollection
     private List<String> notifications;
     private long reputation;

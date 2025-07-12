@@ -1,5 +1,6 @@
 package com.kucp1127.StackIt.UserProfiles.Controller;
 
+import com.kucp1127.StackIt.Email.Controller.EmailController;
 import com.kucp1127.StackIt.UserProfiles.Model.WorkingProfessionalModel;
 import com.kucp1127.StackIt.UserProfiles.Service.WorkingProfessionalService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +17,12 @@ public class WorkingProfessionalController {
     @Autowired
     private WorkingProfessionalService service;
 
+    @Autowired
+    private EmailController emailController;
+
     @PostMapping("/register")
     public ResponseEntity<WorkingProfessionalModel> create(@RequestBody WorkingProfessionalModel prof) {
+        emailController.sendEmailWhileSignup(prof.getEmail() , prof.getName());
         return ResponseEntity.ok(service.create(prof));
     }
 

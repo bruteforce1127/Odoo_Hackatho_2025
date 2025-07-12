@@ -1,5 +1,7 @@
 package com.kucp1127.StackIt.QuestionsPackage.Controller;
 
+import com.kucp1127.StackIt.Email.DTO.AnswerDto;
+import com.kucp1127.StackIt.Email.Service.EmailService;
 import com.kucp1127.StackIt.QuestionsPackage.Model.QuestionsModel;
 import com.kucp1127.StackIt.QuestionsPackage.Model.AnswerModel;
 import com.kucp1127.StackIt.QuestionsPackage.Service.QuestionsService;
@@ -8,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -20,6 +24,8 @@ public class QAController {
     @Autowired
     private  AnswerService aService;
 
+    @Autowired
+    private EmailService emailService;
 
     @PostMapping("/questions")
     public ResponseEntity<QuestionsModel> createQuestion(@RequestBody QuestionsModel q) {
@@ -32,6 +38,12 @@ public class QAController {
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    @GetMapping("/questions")
+    public ResponseEntity<List<QuestionsModel>> getAllQuestions() {
+        return ResponseEntity.ok(qService.getAllQuestions());
+    }
+
 
     @PutMapping("/questions/{id}")
     public ResponseEntity<QuestionsModel> updateQuestion(
@@ -84,5 +96,31 @@ public class QAController {
         return aService.voteAnswer(id, type)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+
+    @PostMapping("/gotReply")
+    public void sendEmailAfterAnswer(@RequestBody AnswerDto answerDto) {
+        emailService.sendSimpleEmail(
+                answerDto.getToEmail(),
+                "Someone replied to your question on ScapIT!",
+                "Hi " + answerDto.getName1() + ",\n" +
+                        "\n" +
+                        answerDto.getName2() + " has replied to your question on ScapIT! 🎉\n" +
+                        "\n" +
+                        "You can now:\n" +
+                        "✅ View the new answer under your question.\n" +
+                        "✅ Continue the discussion and ask follow-up questions.\n" +
+                        "✅ Earn reputation and engage with your peers.\n" +
+                        "\n" +
+                        "We’re excited to see your learning journey continue!\n" +
+                        "\n" +
+                        "If you have any questions or need assistance, feel free to reply to this email.\n" +
+                        "\n" +
+                        "Happy learning and sharing!\n" +
+                        "\n" +
+                        "Best regards,\n" +
+                        "The ScapIT Team\n"
+        );
     }
 }

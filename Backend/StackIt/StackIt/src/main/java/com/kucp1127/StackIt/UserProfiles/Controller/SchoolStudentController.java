@@ -1,5 +1,6 @@
 package com.kucp1127.StackIt.UserProfiles.Controller;
 
+import com.kucp1127.StackIt.Email.Controller.EmailController;
 import com.kucp1127.StackIt.UserProfiles.Model.SchoolStudentModel;
 import com.kucp1127.StackIt.UserProfiles.Service.SchoolStudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +16,13 @@ public class SchoolStudentController {
     @Autowired
     private SchoolStudentService service;
 
+    @Autowired
+    private EmailController emailController;
+
     @PostMapping("/register")
     public ResponseEntity<SchoolStudentModel> create(@RequestBody SchoolStudentModel student) {
         SchoolStudentModel created = service.create(student);
+        emailController.sendEmailWhileSignup(student.getEmail() , student.getName());
         return ResponseEntity.ok(created);
     }
 

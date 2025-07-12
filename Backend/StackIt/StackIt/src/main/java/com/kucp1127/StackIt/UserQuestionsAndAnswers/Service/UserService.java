@@ -24,7 +24,7 @@ public class UserService {
             .noOfQuestions(0)
             .noOfAnswers(0)
             .level("Beginner")
-            .questionsAsked(List.of())
+            .questionsIds(List.of())
             .notifications(List.of())
             .reputation(0L)
             .badges(Set.of())
@@ -39,7 +39,6 @@ public class UserService {
         if (updates.getNoOfQuestions() != 0)          existing.setNoOfQuestions(updates.getNoOfQuestions());
         if (updates.getNoOfAnswers()   != 0)          existing.setNoOfAnswers(updates.getNoOfAnswers());
         if (updates.getLevel()         != null)       existing.setLevel(updates.getLevel());
-        if (updates.getQuestionsAsked()!= null)       existing.setQuestionsAsked(updates.getQuestionsAsked());
         if (updates.getNotifications() != null)       existing.setNotifications(updates.getNotifications());
         if (updates.getReputation()    != 0L)         existing.setReputation(updates.getReputation());
         if (updates.getBadges()        != null)       existing.setBadges(updates.getBadges());
