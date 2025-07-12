@@ -1108,6 +1108,7 @@ class StackItApp {
               <button type="button" class="btn-secondary modal-close" style="background: #fff; color: #4f8cff; border: 2px solid #4f8cff; padding: 22px 58px; border-radius: 8px; font-weight: 600; box-shadow: none; transition: all 0.2s; font-size: 1.15rem; letter-spacing: 0.5px;">Cancel</button>
               <button type="submit" class="btn-primary" style="background: linear-gradient(90deg, #4f8cff 0%, #38e8fc 100%); color: #fff; border: none; padding: 12px 28px; border-radius: 8px; font-weight: 600; box-shadow: 0 2px 8px rgba(79,140,255,0.15); transition: all 0.2s; font-size: 1.15rem; letter-spacing: 0.5px;">Post Question</button>
             </div>
+            <div id="postResult" style="margin-top:10px;color:#4f8cff;font-weight:600;"></div>
           </form>
         </div>
       </div>
@@ -1117,10 +1118,33 @@ class StackItApp {
 
     // Handle form submission
     const form = modal.querySelector(".ask-form");
-    form.addEventListener("submit", (e) => {
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      window.themeManager.showNotification("Question posted successfully!");
-      document.body.removeChild(modal);
+      const API = 'http://192.168.137.16:8080/api';
+      const username = localStorage.getItem('stackit_username');
+      const title = modal.querySelector('#questionTitle').value.trim();
+      const bodyElem = modal.querySelector('#questionBody');
+      const description = bodyElem.textContent.trim() === 'Start writing here...' ? '' : bodyElem.innerHTML.trim();
+      if (!title || !description) {
+        window.themeManager.showNotification('Title and Description required');
+        return;
+      }
+      try {
+        const res = await fetch(`${API}/questions`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, title, description })
+        });
+        if (!res.ok) throw new Error('Failed to post question');
+        const data = await res.json();
+        modal.querySelector('#postResult').textContent = `Question posted with ID: ${data.id}`;
+        window.themeManager.showNotification('Question posted successfully!');
+        // Optionally, close modal after short delay
+        setTimeout(() => { if (document.body.contains(modal)) document.body.removeChild(modal); }, 1200);
+      } catch (err) {
+        modal.querySelector('#postResult').textContent = 'Error posting question.';
+        window.themeManager.showNotification('Error posting question');
+      }
     });
   }
 
