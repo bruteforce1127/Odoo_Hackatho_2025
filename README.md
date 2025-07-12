@@ -57,7 +57,7 @@ In traditional Q&A platforms, duplicate questions, low-quality content, and poor
 - Mobile-friendly design for learning on-the-go.
 - Smooth animations and real-time feedback to keep users engaged.
 
-🧑‍🤝‍🧑 8. Collaborative Editing (Optional Extension)
+🧑‍🤝‍🧑 8. Collaborative Editing 
 - Allows multiple users to collaboratively edit a question or answer draft.
 - Edit history with rollback support and change tracking.
 - Lock system to prevent overwrite conflicts during concurrent edits.
@@ -70,7 +70,7 @@ In traditional Q&A platforms, duplicate questions, low-quality content, and poor
 - Database: PostgreSQL  
 - Frontend: HTML, CSS, JavaScript (Vanilla JS)  
 - Real-Time Communication: Spring WebSockets  
-- AI Integration (optional extension): Pre-trained sentence transformer via external API
+- AI Integration : Pre-trained sentence transformer via external API
 
 👨‍💻 Team Members
 
