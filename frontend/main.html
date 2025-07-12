@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StackIt - Q&A Platform</title>
-    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="css/main.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -216,7 +216,7 @@
 
         <!-- Ask Question Modal -->
         <div id="askModal" style="display:none;position:fixed;z-index:1000;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.3);align-items:center;justify-content:center;">
-            <div style="background:#fff;color:#222;max-width:400px;width:90vw;padding:2rem 1.5rem;border-radius:10px;box-shadow:0 8px 32px #0002;position:relative;">
+            <div style="background:#fff;color:#222;max-width:500px;width:95vw;padding:2rem 1.5rem;border-radius:10px;box-shadow:0 8px 32px #0002;position:relative;">
                 <button id="closeAskModal" style="position:absolute;top:10px;right:10px;background:none;border:none;font-size:1.5rem;cursor:pointer;">&times;</button>
                 <h2 style="margin-bottom:1rem;">Ask a Question</h2>
                 <form id="askForm">
@@ -224,7 +224,28 @@
                     <label for="ask-title">Title</label>
                     <input id="ask-title" required style="margin-bottom:.5rem;">
                     <label for="ask-desc">Description</label>
-                    <textarea id="ask-desc" rows="4" required style="margin-bottom:.5rem;"></textarea>
+                    <div id="textEditorContainer" class="text-editor-container" style="margin-bottom:.5rem;">
+                        <div class="text-editor-toolbar" id="editorToolbar">
+                            <button type="button" class="toolbar-btn-bold" title="Bold"><b>B</b></button>
+                            <button type="button" class="toolbar-btn-italic" title="Italic"><i>I</i></button>
+                            <button type="button" class="toolbar-btn-underline" title="Underline"><u>U</u></button>
+                            <button type="button" class="toolbar-btn-strikethrough" title="Strikethrough"><s>S</s></button>
+                            <span class="toolbar-divider"></span>
+                            <button type="button" class="toolbar-btn-list" title="Bullet List">&#8226; List</button>
+                            <button type="button" class="toolbar-btn-orderedlist" title="Numbered List">1. List</button>
+                            <span class="toolbar-divider"></span>
+                            <button type="button" class="toolbar-btn-emoji" title="Emoji">😊</button>
+                            <button type="button" class="toolbar-btn-link" title="Link">🔗</button>
+                            <button type="button" class="toolbar-btn-img" title="Image">🖼️<input type="file" accept="image/*" style="opacity:0;width:24px;height:24px;position:absolute;left:0;top:0;cursor:pointer;"></button>
+                            <span class="toolbar-divider"></span>
+                            <button type="button" class="toolbar-btn-align" title="Align Left" data-align="left">⬅️</button>
+                            <button type="button" class="toolbar-btn-align" title="Align Center" data-align="center">↔️</button>
+                            <button type="button" class="toolbar-btn-align" title="Align Right" data-align="right">➡️</button>
+                            <span class="toolbar-divider"></span>
+                            <button type="button" class="toolbar-btn-clear" title="Clear">🗑️</button>
+                        </div>
+                        <div id="ask-desc" class="text-editor-content" contenteditable="true" style="min-height:100px;"></div>
+                    </div>
                     <button type="submit" class="btn btn-primary" style="width:100%;margin-top:.5rem;">Submit Question</button>
                 </form>
                 <div id="ask-result" style="margin-top:.5rem;font-size:.95rem;"></div>
@@ -243,7 +264,7 @@
             <div class="footer-content">
                 <div class="footer-section">
                     <h4>StackIt</h4>
-                    <p>A community-driven Q&A platform for developers</p>
+                    <p>A community-driven Q&amp;A platform for developers</p>
                 </div>
                 <div class="footer-section">
                     <h4>Community</h4>
@@ -271,8 +292,8 @@
     <!-- Floating Action Button -->
     <button class="fab" id="fabBtn" title="Ask a Question">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="12" y1="5" x2="12" y2="19"/>
-            <line x1="5" y1="12" x2="19" y2="12"/>
+            <line x="12" y="5" x2="12" y2="19"/>
+            <line x="5" y="12" x2="19" y2="12"/>
         </svg>
     </button>
 
@@ -284,15 +305,15 @@
         </svg>
     </button>
 
-    <script src="/js/main.js"></script>
+    <script src="js/main.js"></script>
     <script>
-    // Navbar login/avatar logic
+    // Navbar login/avatar logic and redirect if logged in
     function renderNavbarUser() {
         const userArea = document.getElementById('navbarUserArea');
         if (!userArea) return;
         const username = localStorage.getItem('stackit_username');
         if (username) {
-            // Logged in: show avatar
+            // Logged in: show avatar button, redirect only on click
             let profilePic = null;
             try {
                 const profile = JSON.parse(localStorage.getItem('stackit_profile'));
@@ -303,7 +324,7 @@
             </button>`;
             document.getElementById('navbarAvatarBtn').onclick = () => { window.location.href = 'profile.html'; };
         } else {
-            // Not logged in: show login button
+            // Not logged in: show login button and redirect to auth.html
             userArea.innerHTML = `<button class="login-btn" id="navbarLoginBtn">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
@@ -312,7 +333,7 @@
                 </svg>
                 Login
             </button>`;
-            document.getElementById('navbarLoginBtn').onclick = () => { window.location.href = 'login.html'; };
+            document.getElementById('navbarLoginBtn').onclick = () => { window.location.href = 'auth.html'; };
         }
     }
 
@@ -345,10 +366,9 @@
             const q = {
                 username: localStorage.getItem('stackit_username') || '',
                 title: document.getElementById('ask-title').value,
-                description: document.getElementById('ask-desc').value
+                description: document.getElementById('ask-desc').innerHTML // get HTML from text editor
             };
             const res = await fetch(`${API}/questions`, {
-
                 method: 'POST',
                 headers: {'Content-Type':'application/json'},
                 body: JSON.stringify(q)
@@ -380,6 +400,42 @@
                 setTimeout(hideAskModal, 1000);
             }
         };
+        // Rich text editor toolbar logic for ask question
+        const askToolbar = document.getElementById('editorToolbar');
+        const askEditor = document.getElementById('ask-desc');
+        if (askToolbar && askEditor) {
+            askToolbar.querySelector('.toolbar-btn-bold').onclick = () => document.execCommand('bold');
+            askToolbar.querySelector('.toolbar-btn-italic').onclick = () => document.execCommand('italic');
+            askToolbar.querySelector('.toolbar-btn-underline').onclick = () => document.execCommand('underline');
+            askToolbar.querySelector('.toolbar-btn-strikethrough').onclick = () => document.execCommand('strikeThrough');
+            askToolbar.querySelector('.toolbar-btn-list').onclick = () => document.execCommand('insertUnorderedList');
+            askToolbar.querySelector('.toolbar-btn-orderedlist').onclick = () => document.execCommand('insertOrderedList');
+            askToolbar.querySelector('.toolbar-btn-emoji').onclick = () => {
+                const emoji = prompt('Enter emoji to insert:');
+                if (emoji) document.execCommand('insertText', false, emoji);
+            };
+            askToolbar.querySelector('.toolbar-btn-link').onclick = () => {
+                const url = prompt('Enter URL:');
+                if (url) document.execCommand('createLink', false, url);
+            };
+            askToolbar.querySelector('.toolbar-btn-img input[type="file"]').onchange = function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    document.execCommand('insertImage', false, evt.target.result);
+                };
+                reader.readAsDataURL(file);
+            };
+            askToolbar.querySelectorAll('.toolbar-btn-align').forEach(btn => {
+                btn.onclick = () => {
+                    document.execCommand('justify' + btn.dataset.align.charAt(0).toUpperCase() + btn.dataset.align.slice(1));
+                };
+            });
+            askToolbar.querySelector('.toolbar-btn-clear').onclick = () => {
+                askEditor.innerHTML = '';
+            };
+        }
 
         // Load questions on page load
         loadQuestions();
@@ -443,7 +499,7 @@
             <div id="answersList">`;
         if (q.answerIds.length) {
             for (let aid of q.answerIds) {
-                html += `<div class="answer" id="ans-${aid}" style="border-bottom:1px solid #eee;padding:.7rem 0;">Loading answer ${aid}…</div>`;
+                html += `<div class="answer" id="ans-${aid}" style="border-bottom:1px solid #eee;padding:.7rem 0;color:#000;">Loading answer ${aid}…</div>`;
             }
         } else {
             html += '<p>No answers yet.</p>';
@@ -455,7 +511,28 @@
                     <input type="hidden" id="a-qid" value="${q.id}">
                     <!-- Username field removed: use logged-in user -->
                     <label for="a-text">Answer</label>
-                    <textarea id="a-text" rows="3" required style="margin-bottom:.5rem;"></textarea>
+                    <div id="answerTextEditorContainer" class="text-editor-container" style="margin-bottom:.5rem;">
+                        <div class="text-editor-toolbar" id="answerEditorToolbar">
+                            <button type="button" class="toolbar-btn-bold" title="Bold"><b>B</b></button>
+                            <button type="button" class="toolbar-btn-italic" title="Italic"><i>I</i></button>
+                            <button type="button" class="toolbar-btn-underline" title="Underline"><u>U</u></button>
+                            <button type="button" class="toolbar-btn-strikethrough" title="Strikethrough"><s>S</s></button>
+                            <span class="toolbar-divider"></span>
+                            <button type="button" class="toolbar-btn-list" title="Bullet List">&#8226; List</button>
+                            <button type="button" class="toolbar-btn-orderedlist" title="Numbered List">1. List</button>
+                            <span class="toolbar-divider"></span>
+                            <button type="button" class="toolbar-btn-emoji" title="Emoji">😊</button>
+                            <button type="button" class="toolbar-btn-link" title="Link">🔗</button>
+                            <button type="button" class="toolbar-btn-img" title="Image">🖼️<input type="file" accept="image/*" style="opacity:0;width:24px;height:24px;position:absolute;left:0;top:0;cursor:pointer;"></button>
+                            <span class="toolbar-divider"></span>
+                            <button type="button" class="toolbar-btn-align" title="Align Left" data-align="left">⬅️</button>
+                            <button type="button" class="toolbar-btn-align" title="Align Center" data-align="center">↔️</button>
+                            <button type="button" class="toolbar-btn-align" title="Align Right" data-align="right">➡️</button>
+                            <span class="toolbar-divider"></span>
+                            <button type="button" class="toolbar-btn-clear" title="Clear">🗑️</button>
+                        </div>
+                        <div id="a-text" class="text-editor-content" contenteditable="true" style="min-height:100px;"></div>
+                    </div>
                     <button type="submit" class="btn btn-primary">Submit Answer</button>
                 </form>
                 <div id="a-create-result" style="margin-top:.5rem;font-size:.95rem;"></div>
@@ -468,8 +545,8 @@
             if (r.ok) {
                 let a = await r.json();
                 document.getElementById(`ans-${aid}`).innerHTML = `
-                    <p>${a.ans}</p>
-                    <p style="color:#888;font-size:.95rem;"><b>${a.username}</b> | <span class="votes">👍${a.upvotes} 👎${a.downvotes}</span></p>
+                    <p style=\"color:#000;\">${a.ans}</p>
+                    <p style=\"color:#888;font-size:.95rem;\"><b>${a.username}</b> | <span class="votes">👍${a.upvotes} 👎${a.downvotes}</span></p>
                     <button class="btn-inline" onclick="voteA(${a.id},'up')">Upvote</button>
                     <button class="btn-inline" onclick="voteA(${a.id},'down')">Downvote</button>
                 `;
@@ -481,7 +558,7 @@
             const a = {
                 questionId: parseInt(document.getElementById('a-qid').value, 10),
                 username: localStorage.getItem('stackit_username') || '',
-                ans: document.getElementById('a-text').value
+                ans: document.getElementById('a-text').innerHTML // get HTML from text editor
             };
             const res = await fetch(`${API}/answers`, {
                 method: 'POST',
@@ -492,8 +569,44 @@
             document.getElementById('a-create-result').textContent =
                 data.id ? `Created A#${data.id}` : 'Error posting answer';
             if (data.id) showQuestionDetail(q.id);
-            document.getElementById('answerForm').reset();
+            document.getElementById('a-text').innerHTML = '';
         };
+        // Rich text editor toolbar logic for answer
+        const answerToolbar = document.getElementById('answerEditorToolbar');
+        const answerEditor = document.getElementById('a-text');
+        if (answerToolbar && answerEditor) {
+            answerToolbar.querySelector('.toolbar-btn-bold').onclick = () => document.execCommand('bold');
+            answerToolbar.querySelector('.toolbar-btn-italic').onclick = () => document.execCommand('italic');
+            answerToolbar.querySelector('.toolbar-btn-underline').onclick = () => document.execCommand('underline');
+            answerToolbar.querySelector('.toolbar-btn-strikethrough').onclick = () => document.execCommand('strikeThrough');
+            answerToolbar.querySelector('.toolbar-btn-list').onclick = () => document.execCommand('insertUnorderedList');
+            answerToolbar.querySelector('.toolbar-btn-orderedlist').onclick = () => document.execCommand('insertOrderedList');
+            answerToolbar.querySelector('.toolbar-btn-emoji').onclick = () => {
+                const emoji = prompt('Enter emoji to insert:');
+                if (emoji) document.execCommand('insertText', false, emoji);
+            };
+            answerToolbar.querySelector('.toolbar-btn-link').onclick = () => {
+                const url = prompt('Enter URL:');
+                if (url) document.execCommand('createLink', false, url);
+            };
+            answerToolbar.querySelector('.toolbar-btn-img input[type="file"]').onchange = function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    document.execCommand('insertImage', false, evt.target.result);
+                };
+                reader.readAsDataURL(file);
+            };
+            answerToolbar.querySelectorAll('.toolbar-btn-align').forEach(btn => {
+                btn.onclick = () => {
+                    document.execCommand('justify' + btn.dataset.align.charAt(0).toUpperCase() + btn.dataset.align.slice(1));
+                };
+            });
+            answerToolbar.querySelector('.toolbar-btn-clear').onclick = () => {
+                answerEditor.innerHTML = '';
+            };
+        }
     }
 
     // Voting logic
