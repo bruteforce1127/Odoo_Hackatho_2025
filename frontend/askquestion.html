@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>StackIt - Ask Question</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0f0f0f;
+      color: white;
+      min-height: 100vh;
+      padding: 30px;
+    }
+
+    /* Navigation Bar */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #1c1c1c;
+      padding: 15px 30px;
+      border-radius: 12px;
+      margin-bottom: 40px;
+      border: 1px solid #333;
+    }
+
+    .navbar .logo {
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .navbar .nav-icons {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .nav-icons a {
+      color: white;
+      text-decoration: none;
+      font-size: 16px;
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid #999;
+    }
+
+    /* Container */
+    .form-container {
+      max-width: 800px;
+      margin: auto;
+      padding: 30px;
+      background-color: #1c1c1c;
+      border: 1px solid #333;
+      border-radius: 15px;
+    }
+
+    .form-container label {
+      display: block;
+      margin: 18px 0 6px;
+      font-weight: 500;
+    }
+
+    .form-container input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      background-color: #111;
+      border: 1px solid #444;
+      color: white;
+      font-size: 16px;
+    }
+
+    .form-container button {
+      margin-top: 30px;
+      padding: 12px 30px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border: none;
+      color: white;
+      font-size: 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .form-container button:hover {
+      background: linear-gradient(135deg, #5a67d8, #6b46c1);
+    }
+
+    /* Rich Text Editor */
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 15px;
+      background: #2c2c2c;
+      border: 1px solid #444;
+      border-radius: 10px;
+      margin-bottom: 12px;
+    }
+
+    .toolbar button {
+      background: #3a3a3a;
+      border: 1px solid #666;
+      border-radius: 8px;
+      padding: 8px 12px;
+      cursor: pointer;
+      color: white;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    .toolbar button:hover {
+      background: #555;
+    }
+
+    .editor {
+      min-height: 200px;
+      padding: 15px;
+      border: 1px solid #444;
+      border-radius: 10px;
+      background-color: #111;
+      color: white;
+    }
+
+    .editor:empty::before {
+      content: 'Describe your question...';
+      color: #666;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <div class="navbar">
+    <div class="logo">🧠 StackIt</div>
+    <div class="nav-icons">
+      <a href="#">Home</a>
+      <a href="#">🔔</a>
+      <a href="#"><img class="avatar" src="https://i.imgur.com/2DhmtJ4.png" alt="avatar"></a>
+    </div>
+  </div>
+
+  <!-- Ask Question Form -->
+  <div class="form-container">
+    <h2 style="text-align:center; margin-bottom: 20px;">Ask a Question</h2>
+
+    <!-- Title -->
+    <label for="title">Title</label>
+    <input type="text" id="title" placeholder="Enter question title">
+
+    <!-- Description -->
+    <label for="description">Description</label>
+    <div class="toolbar">
+      <button onclick="format('bold')"><b>B</b></button>
+      <button onclick="format('italic')"><i>I</i></button>
+      <button onclick="format('strikeThrough')"><s>S</s></button>
+      <button onclick="format('insertOrderedList')">1.</button>
+      <button onclick="format('insertUnorderedList')">•</button>
+      <button onclick="insertEmoji()">😊</button>
+      <button onclick="insertLink()">🔗</button>
+      <button onclick="insertImage()">🖼️</button>
+      <button onclick="format('justifyLeft')">⬅</button>
+      <button onclick="format('justifyCenter')">↔</button>
+      <button onclick="format('justifyRight')">➡</button>
+    </div>
+    <div id="editor" contenteditable="true" class="editor"></div>
+
+    <!-- Tags -->
+    <label for="tags">Tags</label>
+    <input type="text" id="tags" placeholder="e.g. java, spring, rest">
+
+    <!-- Submit -->
+    <button type="submit">Submit</button>
+  </div>
+
+  <!-- Rich Text Editor JS -->
+  <script>
+    function format(command) {
+      document.execCommand(command, false, null);
+    }
+
+    function insertLink() {
+      const url = prompt("Enter the URL:");
+      if (url) {
+        document.execCommand("createLink", false, url);
+      }
+    }
+
+    function insertEmoji() {
+      const emoji = prompt("Enter emoji to insert (like 😊, ❤️, 🚀):");
+      if (emoji) {
+        document.execCommand("insertText", false, emoji);
+      }
+    }
+
+    function insertImage() {
+      const imageUrl = prompt("Enter Image URL:");
+      if (imageUrl) {
+        document.execCommand("insertImage", false, imageUrl);
+      }
+    }
+  </script>
+</body>
+</html>
