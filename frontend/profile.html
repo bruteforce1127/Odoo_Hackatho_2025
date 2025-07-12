@@ -1,4 +1,6 @@
-<html lang="en" data-theme="light"><head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StackIt User Management - Enhanced Profile</title>
@@ -15,6 +17,7 @@
             --error-color: #ef4444;
             --purple-color: #8b5cf6;
             
+            /* Light theme */
             --bg-primary: #ffffff;
             --bg-secondary: #f8fafc;
             --bg-tertiary: #f1f5f9;
@@ -146,6 +149,7 @@
             color: var(--text-secondary);
         }
 
+        /* Profile Header */
         .profile-header {
             display: flex;
             flex-direction: column;
@@ -224,6 +228,7 @@
             color: var(--primary-color);
         }
 
+        /* Grid Layouts */
         .grid {
             display: grid;
             gap: 2rem;
@@ -234,6 +239,7 @@
         .grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
         .grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
 
+        /* Stat Cards */
         .stat-card {
             display: flex;
             align-items: center;
@@ -272,6 +278,7 @@
         .stat-answers { color: var(--purple-color); }
         .stat-badges { color: var(--warning-color); }
 
+        /* Charts */
         .chart-container {
             position: relative;
             height: 300px;
@@ -282,6 +289,7 @@
             height: 200px;
         }
 
+        /* Heatmap */
         .heatmap-container {
             margin-top: 1.5rem;
         }
@@ -325,6 +333,7 @@
             border-radius: 3px;
         }
 
+        /* Activity levels */
         .activity-0 { background-color: #f1f5f9; }
         .activity-1 { background-color: #dbeafe; }
         .activity-2 { background-color: #bfdbfe; }
@@ -337,6 +346,7 @@
         [data-theme="dark"] .activity-3 { background-color: #2563eb; }
         [data-theme="dark"] .activity-4 { background-color: #3b82f6; }
 
+        /* Badges */
         .badges-container {
             display: flex;
             flex-wrap: wrap;
@@ -374,6 +384,7 @@
             border-color: var(--border-hover);
         }
 
+        /* Education Section */
         .education-item {
             display: flex;
             align-items: flex-start;
@@ -409,6 +420,7 @@
             margin-bottom: 0.25rem;
         }
 
+        /* Loading and Error States */
         .loading, .error {
             text-align: center;
             padding: 4rem 2rem;
@@ -446,6 +458,7 @@
             box-shadow: var(--shadow-md);
         }
 
+        /* Toast Notifications */
         .toast-container {
             position: fixed;
             top: 2rem;
@@ -469,6 +482,7 @@
             transition: all 0.3s ease;
         }
 
+        /* Level Info Button */
         .level-info-btn {
             background: none;
             border: none;
@@ -490,6 +504,7 @@
             100% { transform: rotate(360deg); }
         }
 
+        /* Animation */
         .fade-in {
             animation: fadeIn 0.5s ease-in-out;
         }
@@ -505,6 +520,7 @@
             }
         }
 
+        /* Responsive Design */
         @media (min-width: 768px) {
             .profile-header {
                 flex-direction: row;
@@ -586,6 +602,7 @@
     </style>
 </head>
 <body>
+    <!-- Header -->
     <header class="header">
         <div class="header-content">
             <a href="#" class="logo">StackIt</a>
@@ -597,24 +614,28 @@
     </header>
 
     <div class="container">
-        <div id="loadingState" class="loading" style="display: none;">
+        <!-- Loading State -->
+        <div id="loadingState" class="loading">
             <div class="spinner"></div>
             <p>Loading your profile...</p>
         </div>
 
-        <div id="errorState" class="error" style="display: block;">
+        <!-- Error State -->
+        <div id="errorState" class="error" style="display: none;">
             <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 1rem;"></i>
-            <p id="errorMessage">No user logged in. Please log in to view your profile.</p>
+            <p id="errorMessage"></p>
             <button class="retry-btn" onclick="loadProfile()">
                 <i class="fas fa-redo"></i>
                 Try Again
             </button>
         </div>
 
+        <!-- Profile Content -->
         <div id="profileContent" style="display: none;" class="fade-in">
+            <!-- Profile Header -->
             <div class="card" style="margin-bottom: 2rem;">
                 <div class="profile-header">
-                    <img id="profileAvatar" class="profile-avatar" src="/placeholder.svg?height=128&amp;width=128" alt="Profile Picture">
+                    <img id="profileAvatar" class="profile-avatar" src="/placeholder.svg?height=128&width=128" alt="Profile Picture">
                     <div class="profile-info">
                         <h1 class="profile-name" id="profileName">Alex Johnson</h1>
                         <p class="profile-username" id="profileUsername">@alexj_dev</p>
@@ -637,6 +658,7 @@
                 </div>
             </div>
 
+            <!-- Statistics Overview -->
             <div class="grid grid-cols-4" style="margin-bottom: 2rem;">
                 <div class="card">
                     <div class="stat-card">
@@ -679,7 +701,9 @@
                 </div>
             </div>
 
+            <!-- Charts Section -->
             <div class="grid grid-cols-2" style="margin-bottom: 2rem;">
+                <!-- Reputation Chart -->
                 <div class="card">
                     <div class="card-header">
                         <h2 class="card-title">
@@ -693,6 +717,7 @@
                     </div>
                 </div>
 
+                <!-- Level Progress -->
                 <div class="card">
                     <div class="card-header" style="display: flex; align-items: center; justify-content: space-between;">
                         <div>
@@ -715,6 +740,7 @@
                 </div>
             </div>
 
+            <!-- Activity Heatmap -->
             <div class="card" style="margin-bottom: 2rem;">
                 <div class="card-header">
                     <h2 class="card-title">
@@ -739,7 +765,9 @@
                 </div>
             </div>
 
+            <!-- Badges and Education -->
             <div class="grid grid-cols-2">
+                <!-- Badges -->
                 <div class="card">
                     <div class="card-header">
                         <h2 class="card-title">
@@ -772,11 +800,12 @@
                     </div>
                 </div>
 
+                <!-- Education & Experience -->
                 <div class="card">
                     <div class="card-header">
                         <h2 class="card-title">
                             <i class="fas fa-graduation-cap"></i>
-                            Education &amp; Experience
+                            Education & Experience
                         </h2>
                         <p class="card-subtitle">Your background and qualifications</p>
                     </div>
@@ -786,11 +815,14 @@
         </div>
     </div>
 
+    <!-- Toast Notification Container -->
     <div id="toastContainer" class="toast-container"></div>
 
     <script>
+        // Global variables
         let charts = {};
         
+        // Theme management
         function initializeTheme() {
             const savedTheme = localStorage.getItem('stackit-theme') || 'light';
             document.documentElement.setAttribute('data-theme', savedTheme);
@@ -805,6 +837,7 @@
             localStorage.setItem('stackit-theme', newTheme);
             updateThemeToggle(newTheme);
             
+            // Update charts for theme change
             setTimeout(() => {
                 updateChartsForTheme(newTheme);
             }, 100);
@@ -833,6 +866,7 @@
             };
         }
 
+        // Profile management
         function showLoading() {
             document.getElementById('loadingState').style.display = 'block';
             document.getElementById('errorState').style.display = 'none';
@@ -846,9 +880,11 @@
             document.getElementById('errorMessage').textContent = message;
         }
 
+        // Chart initialization for dynamic data
         function initializeCharts(data) {
             const colors = getThemeColors();
             
+            // Reputation Growth Chart
             const reputationCtx = document.getElementById('reputationChart').getContext('2d');
             charts.reputation = new Chart(reputationCtx, {
                 type: 'line',
@@ -897,6 +933,7 @@
                 }
             });
 
+            // Level Progress Chart
             const answers = data && data.noOfAnswers ? data.noOfAnswers : 0;
             const levelThresholds = [0, 3, 6, 10, 15, 21];
             let level = 1;
@@ -912,10 +949,12 @@
             if (progress < 0) progress = 0;
             if (progress > 100) progress = 100;
 
+            // Update level text in profile meta
             const levelText = `Level ${level}`;
             const profileLevelElem = document.getElementById('profileLevel');
             if (profileLevelElem) profileLevelElem.textContent = levelText;
 
+            // Update progress text
             const levelProgressText = document.getElementById('levelProgressText');
             if (levelProgressText) {
                 if (level < 6) {
@@ -925,6 +964,7 @@
                 }
             }
 
+            // Draw chart
             const levelCtx = document.getElementById('levelChart').getContext('2d');
             if (charts.level) charts.level.destroy();
             charts.level = new Chart(levelCtx, {
@@ -966,6 +1006,7 @@
             });
         }
 
+        // Show level info as toast
         async function showLevelInfo() {
             showToast(
                 `<strong>Level System</strong><br>
@@ -978,6 +1019,7 @@
             );
         }
 
+        // Toast notification function
         function showToast(message) {
             const container = document.getElementById('toastContainer');
             if (!container) return;
@@ -993,6 +1035,7 @@
                 toast.style.transform = 'translateY(0)';
             }, 10);
             
+            // Auto-dismiss after 4 seconds
             setTimeout(() => {
                 toast.style.opacity = '0';
                 toast.style.transform = 'translateY(-20px)';
@@ -1002,25 +1045,115 @@
             }, 4000);
         }
 
+        async function renderUserQuestions() {
+            // Remove any existing card to avoid duplicates
+            const oldCard = document.getElementById('userQuestionsCard');
+            if (oldCard) oldCard.remove();
+
+            const container = document.createElement('div');
+            container.className = 'card';
+            container.id = 'userQuestionsCard';
+            container.style.marginBottom = '2rem';
+            container.innerHTML = `<h2 class="card-title"><i class="fas fa-question-circle"></i> Your Questions</h2>
+                <div id="userQuestionsList">Loading...</div>`;
+            // Insert at the very top of profileContent
+            const profileContent = document.getElementById('profileContent');
+            profileContent.insertBefore(container, profileContent.firstElementChild);
+
+            const list = container.querySelector('#userQuestionsList');
+            const API = 'http://192.168.137.16:8080/api';
+            const username = localStorage.getItem('stackit_username');
+            try {
+                const userRes = await fetch(`${API}/users/${username}`);
+                if (!userRes.ok) {
+                    list.innerHTML = '<p>User not found</p>';
+                    return;
+                }
+                const user = await userRes.json();
+                if (!user.questionsIds || user.questionsIds.length === 0) {
+                    list.innerHTML = '<p>No questions posted yet.</p>';
+                    return;
+                }
+                list.innerHTML = '';
+            for (const qid of user.questionsIds) {
+                const qRes = await fetch(`${API}/questions/${qid}`);
+                if (qRes.ok) {
+                    const q = await qRes.json();
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'question';
+                    wrapper.style.borderBottom = '1px solid #eee';
+                    wrapper.style.padding = '.7rem 0';
+
+                    // Collapsible header
+                    const header = document.createElement('div');
+                    header.className = 'question-header';
+                    header.style.cursor = 'pointer';
+                    header.style.display = 'flex';
+                    header.style.alignItems = 'center';
+                    header.style.justifyContent = 'space-between';
+                    header.innerHTML = `<b>${q.title} (ID: ${q.id})</b> <span style="font-size:1.2em;">&#9660;</span>`;
+
+                    // Details (dropdown)
+                    const details = document.createElement('div');
+                    details.className = 'question-details';
+                    details.style.display = 'none';
+                    details.style.marginTop = '0.5rem';
+                    details.innerHTML = `
+                        <span style="color:#64748b;">${q.description || ''}</span><br>
+                        <span class="votes">👍${q.upvotes} 👎${q.downvotes}</span> | <span style="color:#aaa;">${q.answerIds ? q.answerIds.length : 0} answers</span><br>
+                        <span style="color:#aaa;">Created: ${q.createdAt ? new Date(q.createdAt).toLocaleString() : 'N/A'}</span>
+                    `;
+
+                    // Toggle logic
+                    header.addEventListener('click', function() {
+                        // Close all other open details
+                        list.querySelectorAll('.question-details').forEach(el => {
+                            if (el !== details) el.style.display = 'none';
+                        });
+                        // Toggle this one
+                        details.style.display = details.style.display === 'none' ? 'block' : 'none';
+                        // Update arrow
+                        const arrow = header.querySelector('span');
+                        arrow.innerHTML = details.style.display === 'none' ? '&#9660;' : '&#9650;';
+                    });
+
+                    wrapper.appendChild(header);
+                    wrapper.appendChild(details);
+                    list.appendChild(wrapper);
+                }
+            }
+            } catch (e) {
+                list.innerHTML = '<p>Could not load your questions.</p>';
+            }
+        }
+
         function showProfile(data) {
+            // Show profile content immediately for faster perceived load
             document.getElementById('loadingState').style.display = 'none';
             document.getElementById('errorState').style.display = 'none';
             document.getElementById('profileContent').style.display = 'block';
 
+            // Render static info first
             updateProfileData(data);
             renderEducationExperience(data);
 
+            // Render user's questions (always fetch fresh)
+            renderUserQuestions();
+
+            // Render charts and heatmap after container is visible
             setTimeout(() => {
                 initializeCharts(data);
                 generateDynamicHeatmap(data);
             }, 0);
         }
 
+        // Education & Experience rendering
         function renderEducationExperience(data) {
             const container = document.getElementById('educationExperienceContent');
             let html = '';
             let hasAny = false;
             
+            // School
             if (data.schoolName || data.studentClass) {
                 hasAny = true;
                 html += `<div class="education-item">
@@ -1033,6 +1166,7 @@
                 </div>`;
             }
             
+            // College
             if (data.collegeName || data.course) {
                 hasAny = true;
                 html += `<div class="education-item">
@@ -1046,6 +1180,7 @@
                 </div>`;
             }
             
+            // Job
             if (data.companyName || data.yearsOfExperience) {
                 hasAny = true;
                 html += `<div class="education-item">
@@ -1065,10 +1200,12 @@
             container.innerHTML = html;
         }
 
+        // Dynamic Heatmap generation
         function generateDynamicHeatmap(data) {
             const heatmapGrid = document.getElementById('heatmapGrid');
             heatmapGrid.innerHTML = '';
             
+            // Use data.activityHeatmap if available, else random
             let activityArr = [];
             if (data && Array.isArray(data.activityHeatmap) && data.activityHeatmap.length === 84) {
                 activityArr = data.activityHeatmap;
@@ -1088,6 +1225,7 @@
         }
 
         function updateProfileData(data) {
+            // Profile header
             if (data.profilePic) {
                 document.getElementById('profileAvatar').src = data.profilePic;
             }
@@ -1099,11 +1237,13 @@
             document.getElementById('profileAge').textContent = data.age ? `${data.age} years old` : 'Age not provided';
             document.getElementById('profileLevel').textContent = data.level || 'Beginner';
             
+            // Statistics
             document.getElementById('reputationStat').textContent = data.reputation || 0;
             document.getElementById('questionsStat').textContent = data.noOfQuestions || 0;
             document.getElementById('answersStat').textContent = data.noOfAnswers || 0;
             document.getElementById('badgesStat').textContent = Array.isArray(data.badges) ? data.badges.length : 0;
             
+            // Badges
             const badgesContainer = document.getElementById('badgesContainer');
             if (Array.isArray(data.badges) && data.badges.length > 0) {
                 badgesContainer.innerHTML = data.badges.map(badge => 
@@ -1140,10 +1280,12 @@
             });
         }
 
+        // Profile loading
         async function loadProfile() {
             try {
                 showLoading();
                 
+                // Try to load from localStorage first
                 let data = null;
                 let username = localStorage.getItem('stackit_username') || '';
                 let localProfile = null;
@@ -1168,6 +1310,7 @@
                     const apiBase = baseUrl + '/api/users';
                     let errorMsg = '';
                     
+                    // Try /school/{username}
                     try {
                         const res = await fetch(`${baseUrl}/school/${encodeURIComponent(username)}`);
                         if (res.ok) {
@@ -1176,6 +1319,7 @@
                             throw new Error('Not a school user');
                         }
                     } catch (e) {
+                        // Try /college/{username}
                         try {
                             const res = await fetch(`${baseUrl}/college/${encodeURIComponent(username)}`);
                             if (res.ok) {
@@ -1184,6 +1328,7 @@
                                 throw new Error('Not a college user');
                             }
                         } catch (e2) {
+                            // Try /api/users/{username}
                             try {
                                 const res = await fetch(`${apiBase}/${encodeURIComponent(username)}`);
                                 if (res.ok) {
@@ -1198,6 +1343,7 @@
                     }
                     
                     if (data) {
+                        // Fetch email, bio, age from /api/users/profile/{username} (GET)
                         try {
                             const profileRes = await fetch(`${apiBase}/profile/${encodeURIComponent(username)}`);
                             if (profileRes.ok) {
@@ -1207,6 +1353,7 @@
                                 if (profileData.age) data.age = profileData.age;
                             }
                         } catch (e) {
+                            // Ignore profile fetch error, show main data
                         }
                         
                         showProfile(data);
@@ -1219,10 +1366,11 @@
             }
         }
 
+        // Initialize on page load
         document.addEventListener('DOMContentLoaded', () => {
             initializeTheme();
             loadProfile();
         });
     </script>
-
-</body></html>
+</body>
+</html>
