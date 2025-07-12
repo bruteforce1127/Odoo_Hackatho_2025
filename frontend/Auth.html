@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login and Registration</title>
+    <style>
+       
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(120deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: #fff;
+            padding: 2.5rem 2rem 2rem 2rem;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+            width: 100%;
+            max-width: 420px;
+            margin: 1rem auto;
+            transition: box-shadow 0.2s;
+        }
+
+        .container h2, .container h3 {
+            color: #2575fc;
+            margin-bottom: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group {
+            margin-bottom: 1.1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.4rem;
+            color: #333;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="number"],
+        input[type="password"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 0.7rem 0.9rem;
+            border: 1.5px solid #d1d5db;
+            border-radius: 7px;
+            font-size: 1rem;
+            background: #f8fafc;
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="number"]:focus,
+        input[type="password"]:focus,
+        textarea:focus,
+        select:focus {
+            border: 1.5px solid #2575fc;
+            outline: none;
+            background: #fff;
+            box-shadow: 0 0 0 2px #e3f0ff;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        input[type="button"],
+        input[type="submit"] {
+            background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+            color: #fff;
+            border: none;
+            border-radius: 7px;
+            padding: 0.7rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-right: 0.5rem;
+            margin-top: 0.2rem;
+            box-shadow: 0 2px 8px 0 rgba(31, 38, 135, 0.10);
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+
+        input[type="button"]:hover,
+        input[type="submit"]:hover {
+            background: linear-gradient(90deg, #2575fc 0%, #6a11cb 100%);
+            box-shadow: 0 4px 16px 0 rgba(31, 38, 135, 0.13);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+
+        .profile-pic-upload-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .profile-pic-preview-container {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2.5px solid #2575fc;
+            background: #f8fafc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-pic-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-pic-input {
+            display: none;
+        }
+
+        .update-pic-btn {
+            background: #f8fafc;
+            border: 1.5px solid #d1d5db;
+            color: #333;
+            padding: 0.5rem 1rem;
+            border-radius: 7px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .update-pic-btn:hover {
+            background: #e3f0ff;
+            border-color: #2575fc;
+        }
+
+       
+        @media (max-width: 600px) {
+            .container {
+                padding: 1.2rem 0.5rem 1.5rem 0.5rem;
+                max-width: 98vw;
+            }
+            h2, h3 {
+                font-size: 1.1rem;
+            }
+        }
+
+       
+        #step1 h3, #step2 h3 {
+            font-size: 1.1rem;
+            color: #6a11cb;
+            margin-bottom: 0.7rem;
+        }
+
+        #step2 {
+            margin-top: 1.2rem;
+        }
+
+        #schoolFields, #collegeFields, #professionalFields {
+            border-left: 3px solid #e3e8f0;
+            padding-left: 1rem;
+            margin-bottom: 0.7rem;
+            background: #f6faff;
+            border-radius: 5px;
+        }
+
+        #step1, #step2 {
+            transition: opacity 0.3s;
+        }
+        #step1.hidden, #step2.hidden {
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="login">
+        <h2>Login</h2>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="loginUsername">Username</label>
+                <input type="text" id="loginUsername" name="loginUsername" placeholder="Enter your username" required>
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">Password</label>
+                <input type="password" id="loginPassword" name="loginPassword" placeholder="Enter your password" required>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Login">
+            </div>
+        </form>
+        <div id="loginSuccess" class="hidden" style="text-align:center; margin-top:1.2rem;">
+            <div id="loginProfilePicContainer" style="margin-bottom:0.7rem;"></div>
+            <span style="color:#2575fc; font-weight:600; font-size:1.1rem;">Login successful!</span>
+        </div>
+        <div style="text-align:center; margin-top:1rem;">
+            <span>Don't have an account?</span>
+            <button type="button" onclick="showRegistration()" style="background:none;border:none;color:#2575fc;font-weight:600;cursor:pointer;text-decoration:underline;font-size:1rem;">Register</button>
+        </div>
+    </div>
+
+    <div class="container hidden" id="register">
+        <h2>Register</h2>
+        <form id="registerForm">
+            <div id="step1">
+                <h3>Step 1: Basic Information</h3>
+                <div class="form-group">
+                    <label for="profilePic">Profile Picture</label>
+                    <div class="profile-pic-upload-wrapper">
+                        <div id="profilePicPreviewContainer" class="profile-pic-preview-container">
+                            <img id="profilePicPreview" src="" alt="Profile Preview" class="profile-pic-preview" style="display:none;">
+                        </div>
+                        <input type="file" id="profilePic" name="profilePic" accept="image/*" class="profile-pic-input" onchange="previewProfilePic(event)">
+                        <button type="button" class="update-pic-btn" onclick="document.getElementById('profilePic').click()">Select Picture</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+                </div>
+                <div class="form-group">
+                    <label for="username">Username (Unique ID)</label>
+                    <input type="text" id="username" name="username" placeholder="Create a unique username" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="age">Age</label>
+                    <input type="number" id="age" name="age" min="10" max="100" placeholder="Enter your age" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="password" name="password" placeholder="Create a password" required>
+                        <span class="toggle-password" onclick="togglePassword('password', this)">👁</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
+                        <span class="toggle-password" onclick="togglePassword('confirmPassword', this)">👁</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="bio">Bio</label>
+                    <textarea id="bio" name="bio" placeholder="Tell us about yourself" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <input type="button" value="Next" onclick="nextStep(1)">
+                </div>
+            </div>
+            <div id="step2" class="hidden">
+                <h3>Step 2: Education/Professional Details</h3>
+                <div class="form-group">
+                    <label for="userType">I am a:</label>
+                    <select id="userType" name="userType" onchange="showFields(this.value)" required>
+                        <option value="">Select an option</option>
+                        <option value="school">School Student</option>
+                        <option value="college">College Student</option>
+                        <option value="professional">Working Professional</option>
+                    </select>
+                </div>
+                
+                <!-- School Student Fields -->
+                <div id="schoolFields" class="hidden">
+                    <div class="form-group">
+                        <label for="schoolName">School Name</label>
+                        <input type="text" id="schoolName" name="schoolName" placeholder="Enter school name">
+                    </div>
+                    <div class="form-group">
+                        <label for="studentClass">Class/Grade</label>
+                        <input type="text" id="studentClass" name="studentClass" placeholder="e.g., 10th Grade">
+                    </div>
+                </div>
+                
+                <!-- College Student Fields -->
+                <div id="collegeFields" class="hidden">
+                    <div class="form-group">
+                        <label for="collegeName">College Name</label>
+                        <input type="text" id="collegeName" name="collegeName" placeholder="Enter college name">
+                    </div>
+                    <div class="form-group">
+                        <label for="course">Course</label>
+                        <input type="text" id="course" name="course" placeholder="e.g., Computer Science">
+                    </div>
+                    <div class="form-group">
+                        <label for="startYear">Start Year</label>
+                        <input type="number" id="startYear" name="startYear" min="2000" max="2030" placeholder="Start year">
+                    </div>
+                    <div class="form-group">
+                        <label for="endYear">End Year</label>
+                        <input type="number" id="endYear" name="endYear" min="2000" max="2030" placeholder="End year">
+                    </div>
+                </div>
+                
+                
+                <div id="professionalFields" class="hidden">
+                    <div class="form-group">
+                        <label for="companyName">Company Name</label>
+                        <input type="text" id="companyName" name="companyName" placeholder="Where you work">
+                    </div>
+                    <div class="form-group">
+                        <label for="yearsOfExperience">Years of Experience</label>
+                        <input type="number" id="yearsOfExperience" name="yearsOfExperience" min="0" max="50" placeholder="Years of experience">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <input type="button" value="Back" onclick="prevStep(2)">
+                    <input type="submit" value="Register">
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        
+        function togglePassword(fieldId, el) {
+            const input = document.getElementById(fieldId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                el.innerHTML = '👀';
+            } else {
+                input.type = 'password';
+                el.innerHTML = '👁';
+            }
+        }
+
+        
+        function previewProfilePic(event) {
+            const file = event.target.files[0];
+            const previewContainer = document.getElementById('profilePicPreviewContainer');
+            const preview = document.getElementById('profilePicPreview');
+            
+            if (file) {
+                
+                if (!file.type.startsWith('image/')) {
+                    alert('Please select a valid image file.');
+                    event.target.value = '';
+                    return;
+                }
+                
+               
+                if (file.size > 2 * 1024 * 1024) {
+                    alert('Profile picture must be less than 2MB.');
+                    event.target.value = '';
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    previewContainer.style.background = '#f8fafc';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = '';
+                preview.style.display = 'none';
+                previewContainer.style.background = '#f8fafc';
+            }
+        }
+
+        // Login form handler with success message and profile pic
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+            if (!username || !password) {
+                alert('Please enter both username and password.');
+                return;
+            }
+            // Use /api/auth/login endpoint
+            fetch('http://192.168.137.1:8080/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, password })
+            })
+            .then(async response => {
+                if (!response.ok) throw new Error('Login failed');
+                let data;
+                try {
+                    data = await response.json();
+                } catch {
+                    data = null;
+                }
+               
+                document.getElementById('loginSuccess').classList.remove('hidden');
+               
+                const pic = localStorage.getItem('profilePic_' + username);
+                const picContainer = document.getElementById('loginProfilePicContainer');
+                if (pic) {
+                    picContainer.innerHTML = `<img src="${pic}" alt="Profile" style="width:80px;height:80px;border-radius:50%;border:2.5px solid #2575fc;object-fit:cover;box-shadow:0 2px 8px 0 rgba(31,38,135,0.10);">`;
+                } else {
+                    picContainer.innerHTML = '<div style="width:80px;height:80px;border-radius:50%;border:2.5px solid #2575fc;background:#f8fafc;"></div>';
+                }
+                document.getElementById('loginForm').classList.add('hidden');
+                
+                const loginData = {
+                    username: username,
+                    loginTime: new Date().toISOString(),
+                    ...(data ? { response: data } : {})
+                };
+                console.log('Login Success:', JSON.stringify(loginData, null, 2));
+            })
+            .catch(error => {
+                alert('Login failed. Please check your credentials or try again.');
+                console.error('Login error:', error);
+            });
+        });
+
+        function showRegistration() {
+            document.getElementById('login').classList.add('hidden');
+            document.getElementById('register').classList.remove('hidden');
+            resetForm();
+        }
+
+        function resetForm() {
+            document.getElementById('step1').classList.remove('hidden');
+            document.getElementById('step2').classList.add('hidden');
+            hideAllFields();
+            document.getElementById('registerForm').reset();
+            previewProfilePic({target:{files:[]}});
+        }
+
+        function hideAllFields() {
+            document.getElementById('schoolFields').classList.add('hidden');
+            document.getElementById('collegeFields').classList.add('hidden');
+            document.getElementById('professionalFields').classList.add('hidden');
+        }
+
+        function nextStep(current) {
+            if (current === 1) {
+                const required = ['name', 'username', 'email', 'age', 'password', 'confirmPassword'];
+                let valid = true;
+                required.forEach(field => {
+                    if (!document.getElementById(field).value.trim()) {
+                        valid = false;
+                    }
+                });
+                if (!valid) {
+                    alert('Please fill all required fields in Step 1');
+                    return;
+                }
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                if (password !== confirmPassword) {
+                    alert('Passwords do not match.');
+                    return;
+                }
+                document.getElementById('step1').classList.add('hidden');
+                document.getElementById('step2').classList.remove('hidden');
+            }
+        }
+
+        function prevStep(current) {
+            if (current === 2) {
+                document.getElementById('step2').classList.add('hidden');
+                document.getElementById('step1').classList.remove('hidden');
+            }
+        }
+
+        function showFields(type) {
+            hideAllFields();
+            if (type === 'school') {
+                document.getElementById('schoolFields').classList.remove('hidden');
+            } else if (type === 'college') {
+                document.getElementById('collegeFields').classList.remove('hidden');
+            } else if (type === 'professional') {
+                document.getElementById('professionalFields').classList.remove('hidden');
+            }
+        }
+
+        
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const userType = document.getElementById('userType').value;
+            if (!userType) {
+                alert('Please select your user type');
+                return;
+            }
+
+            const profilePicInput = document.getElementById('profilePic');
+            const file = profilePicInput.files[0];
+
+            const getBase64 = file => new Promise((resolve, reject) => {
+                if (!file) return resolve(null);
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+
+            getBase64(file).then(profilePicBase64 => {
+                const formData = {
+                    name: document.getElementById('name').value,
+                    username: document.getElementById('username').value,
+                    email: document.getElementById('email').value,
+                    age: parseInt(document.getElementById('age').value),
+                    password: document.getElementById('password').value,
+                    bio: document.getElementById('bio').value,
+                    profilePic: profilePicBase64
+                };
+
+                if (userType === 'school') {
+                    formData.schoolName = document.getElementById('schoolName').value;
+                    formData.studentClass = document.getElementById('studentClass').value;
+                } else if (userType === 'college') {
+                    formData.collegeName = document.getElementById('collegeName').value;
+                    formData.course = document.getElementById('course').value;
+                    formData.startYear = parseInt(document.getElementById('startYear').value);
+                    formData.endYear = parseInt(document.getElementById('endYear').value);
+                } else if (userType === 'professional') {
+                    formData.companyName = document.getElementById('companyName').value;
+                    formData.yearsOfExperience = parseInt(document.getElementById('yearsOfExperience').value);
+                }
+
+                let endpoint;
+                const baseUrl = 'http://192.168.137.1:8080';
+                if (userType === 'school') endpoint = baseUrl + '/school/register';
+                else if (userType === 'college') endpoint = baseUrl + '/college/register';
+                else if (userType === 'professional') endpoint = baseUrl + '/api/register';
+
+                fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                })
+                .then(response => {
+                    if (response.ok) {
+                        if (formData.profilePic && formData.username) {
+                            try {
+                                localStorage.setItem('profilePic_' + formData.username, formData.profilePic);
+                            } catch (e) {
+                                console.warn('Could not save profile picture to localStorage:', e);
+                            }
+                        }
+                        alert('Registration successful! Please log in.');
+                        document.getElementById('register').classList.add('hidden');
+                        document.getElementById('login').classList.remove('hidden');
+                        document.getElementById('registerForm').reset();
+                        resetForm();
+                    } else {
+                        throw new Error('Registration failed');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Registration failed. Please try again.');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
