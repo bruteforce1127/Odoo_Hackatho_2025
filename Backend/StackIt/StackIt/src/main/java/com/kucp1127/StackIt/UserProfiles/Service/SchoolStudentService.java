@@ -13,22 +13,18 @@ public class SchoolStudentService {
     @Autowired
     private SchoolStudentRepository repository;
 
-    // Create
     public SchoolStudentModel create(SchoolStudentModel student) {
         return repository.save(student);
     }
 
-    // Get all
     public List<SchoolStudentModel> getAll() {
         return repository.findAll();
     }
 
-    // Find by username
     public Optional<SchoolStudentModel> getByUsername(String username) {
         return repository.findById(username);
     }
 
-    // Update (cannot change username)
     public Optional<SchoolStudentModel> update(String username, SchoolStudentModel updateData) {
         return repository.findById(username).map(existing -> {
             existing.setName(updateData.getName());
@@ -40,7 +36,6 @@ public class SchoolStudentService {
         });
     }
 
-    // Delete
     public void delete(String username) {
         repository.deleteById(username);
     }
