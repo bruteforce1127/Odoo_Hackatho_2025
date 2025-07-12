@@ -3,366 +3,933 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login and Registration</title>
+    <title>StackIt - Login & Registration</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-       
+        :root {
+            --primary-color: #3b82f6;
+            --primary-hover: #2563eb;
+            --primary-light: #dbeafe;
+            --secondary-color: #64748b;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            
+            /* Light theme */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --border-color: #e2e8f0;
+            --border-hover: #cbd5e1;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --border-hover: #475569;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.3), 0 8px 10px -6px rgb(0 0 0 / 0.3);
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Arial, sans-serif;
         }
 
         body {
-            background: linear-gradient(120deg, #6a11cb 0%, #2575fc 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
             min-height: 100vh;
+            line-height: 1.6;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .header {
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 0;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .theme-toggle {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .theme-toggle:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--border-hover);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 2rem;
         }
 
-        .container {
-            background: #fff;
-            padding: 2.5rem 2rem 2rem 2rem;
-            border-radius: 18px;
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+        .auth-container {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--shadow-xl);
             width: 100%;
-            max-width: 420px;
-            margin: 1rem auto;
-            transition: box-shadow 0.2s;
+            max-width: 480px;
+            transition: all 0.3s ease;
         }
 
-        .container h2, .container h3 {
-            color: #2575fc;
-            margin-bottom: 1.2rem;
-            font-weight: 600;
-            letter-spacing: 0.5px;
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2rem;
         }
 
-        .form-group {
-            margin-bottom: 1.1rem;
+        .auth-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
         }
 
-        label {
-            display: block;
-            margin-bottom: 0.4rem;
-            color: #333;
+        .auth-subtitle {
+            color: var(--text-secondary);
             font-size: 1rem;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+            font-size: 0.875rem;
             font-weight: 500;
         }
 
-        input[type="text"],
-        input[type="email"],
-        input[type="number"],
-        input[type="password"],
-        textarea,
-        select {
+        .form-input {
             width: 100%;
-            padding: 0.7rem 0.9rem;
-            border: 1.5px solid #d1d5db;
-            border-radius: 7px;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
             font-size: 1rem;
-            background: #f8fafc;
-            transition: border 0.2s, box-shadow 0.2s;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: all 0.2s ease;
         }
 
-        input[type="text"]:focus,
-        input[type="email"]:focus,
-        input[type="number"]:focus,
-        input[type="password"]:focus,
-        textarea:focus,
-        select:focus {
-            border: 1.5px solid #2575fc;
+        .form-input:focus {
             outline: none;
-            background: #fff;
-            box-shadow: 0 0 0 2px #e3f0ff;
+            border-color: var(--primary-color);
+            background: var(--bg-primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
         }
 
-        textarea {
+        .form-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .form-textarea {
             resize: vertical;
-            min-height: 60px;
+            min-height: 80px;
         }
 
-        input[type="button"],
-        input[type="submit"] {
-            background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
-            color: #fff;
+        /* Password Input */
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 1.125rem;
+            transition: color 0.2s ease;
+        }
+
+        .password-toggle:hover {
+            color: var(--text-secondary);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
             border: none;
-            border-radius: 7px;
-            padding: 0.7rem 1.5rem;
-            font-size: 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
             font-weight: 600;
             cursor: pointer;
-            margin-right: 0.5rem;
-            margin-top: 0.2rem;
-            box-shadow: 0 2px 8px 0 rgba(31, 38, 135, 0.10);
-            transition: background 0.2s, box-shadow 0.2s;
+            transition: all 0.2s ease;
+            text-decoration: none;
         }
 
-        input[type="button"]:hover,
-        input[type="submit"]:hover {
-            background: linear-gradient(90deg, #2575fc 0%, #6a11cb 100%);
-            box-shadow: 0 4px 16px 0 rgba(31, 38, 135, 0.13);
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: var(--shadow-sm);
         }
 
-        .hidden {
-            display: none !important;
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            box-shadow: var(--shadow-md);
         }
 
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
 
-        .profile-pic-upload-wrapper {
-            position: relative;
+        .btn-secondary:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--border-hover);
+        }
+
+        .btn-link {
+            background: none;
+            color: var(--primary-color);
+            border: none;
+            padding: 0;
+            font-weight: 600;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .btn-link:hover {
+            color: var(--primary-hover);
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        /* Profile Picture Upload */
+        .profile-upload {
             display: flex;
             align-items: center;
             gap: 1rem;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
         }
 
-        .profile-pic-preview-container {
+        .profile-preview {
             width: 80px;
             height: 80px;
             border-radius: 50%;
             overflow: hidden;
-            border: 2.5px solid #2575fc;
-            background: #f8fafc;
+            border: 3px solid var(--primary-color);
+            background: var(--bg-tertiary);
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
         }
 
-        .profile-pic-preview {
+        .profile-preview img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
 
-        .profile-pic-input {
+        .profile-placeholder {
+            color: var(--text-muted);
+            font-size: 2rem;
+        }
+
+        .profile-input {
             display: none;
         }
 
-        .update-pic-btn {
-            background: #f8fafc;
-            border: 1.5px solid #d1d5db;
-            color: #333;
+        /* Step Indicator */
+        .step-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
             padding: 0.5rem 1rem;
-            border-radius: 7px;
-            cursor: pointer;
-            transition: all 0.2s;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
         }
 
-        .update-pic-btn:hover {
-            background: #e3f0ff;
-            border-color: #2575fc;
+        .step.active {
+            background: var(--primary-color);
+            color: white;
         }
 
-       
-        @media (max-width: 600px) {
-            .container {
-                padding: 1.2rem 0.5rem 1.5rem 0.5rem;
-                max-width: 98vw;
+        .step.inactive {
+            background: var(--bg-secondary);
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+        }
+
+        .step.completed {
+            background: var(--success-color);
+            color: white;
+        }
+
+        /* Form Sections */
+        .form-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Success Message */
+        .success-message {
+            text-align: center;
+            padding: 2rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--success-color);
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        .success-icon {
+            font-size: 3rem;
+            color: var(--success-color);
+            margin-bottom: 1rem;
+        }
+
+        .success-text {
+            color: var(--success-color);
+            font-weight: 600;
+            font-size: 1.125rem;
+        }
+
+        /* Form Actions */
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .form-actions .btn {
+            flex: 1;
+        }
+
+        /* Auth Switch */
+        .auth-switch {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        /* Utility Classes */
+        .hidden {
+            display: none !important;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mb-1 { margin-bottom: 0.5rem; }
+        .mb-2 { margin-bottom: 1rem; }
+        .mb-3 { margin-bottom: 1.5rem; }
+        .mb-4 { margin-bottom: 2rem; }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                padding: 0 1rem;
             }
-            h2, h3 {
-                font-size: 1.1rem;
+
+            .main-content {
+                padding: 1rem;
+            }
+
+            .auth-container {
+                padding: 1.5rem;
+            }
+
+            .auth-title {
+                font-size: 1.5rem;
+            }
+
+            .step-indicator {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .profile-upload {
+                flex-direction: column;
+                text-align: center;
             }
         }
 
-       
-        #step1 h3, #step2 h3 {
-            font-size: 1.1rem;
-            color: #6a11cb;
-            margin-bottom: 0.7rem;
+        @media (max-width: 480px) {
+            .auth-container {
+                padding: 1rem;
+            }
+
+            .profile-preview {
+                width: 60px;
+                height: 60px;
+            }
         }
 
-        #step2 {
-            margin-top: 1.2rem;
+        /* Animation */
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
         }
 
-        #schoolFields, #collegeFields, #professionalFields {
-            border-left: 3px solid #e3e8f0;
-            padding-left: 1rem;
-            margin-bottom: 0.7rem;
-            background: #f6faff;
-            border-radius: 5px;
-        }
-
-        #step1, #step2 {
-            transition: opacity 0.3s;
-        }
-        #step1.hidden, #step2.hidden {
-            opacity: 0;
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container" id="login">
-        <h2>Login</h2>
-        <form id="loginForm">
-            <div class="form-group">
-                <label for="loginUsername">Username</label>
-                <input type="text" id="loginUsername" name="loginUsername" placeholder="Enter your username" required>
-            </div>
-            <div class="form-group">
-                <label for="loginPassword">Password</label>
-                <input type="password" id="loginPassword" name="loginPassword" placeholder="Enter your password" required>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Login">
-            </div>
-        </form>
-        <div id="loginSuccess" class="hidden" style="text-align:center; margin-top:1.2rem;">
-            <div id="loginProfilePicContainer" style="margin-bottom:0.7rem;"></div>
-            <span style="color:#2575fc; font-weight:600; font-size:1.1rem;">Login successful!</span>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="#" class="logo">StackIt</a>
+            <button class="theme-toggle" onclick="toggleTheme()">
+                <i id="theme-icon" class="fas fa-moon"></i>
+                <span id="theme-text">Dark Mode</span>
+            </button>
         </div>
-        <div style="text-align:center; margin-top:1rem;">
-            <span>Don't have an account?</span>
-            <button type="button" onclick="showRegistration()" style="background:none;border:none;color:#2575fc;font-weight:600;cursor:pointer;text-decoration:underline;font-size:1rem;">Register</button>
-        </div>
-    </div>
+    </header>
 
-    <div class="container hidden" id="register">
-        <h2>Register</h2>
-        <form id="registerForm">
-            <div id="step1">
-                <h3>Step 1: Basic Information</h3>
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Login Form -->
+        <div class="auth-container" id="loginContainer">
+            <div class="auth-header">
+                <h1 class="auth-title">Welcome Back</h1>
+                <p class="auth-subtitle">Sign in to your StackIt account</p>
+            </div>
+
+            <form id="loginForm">
                 <div class="form-group">
-                    <label for="profilePic">Profile Picture</label>
-                    <div class="profile-pic-upload-wrapper">
-                        <div id="profilePicPreviewContainer" class="profile-pic-preview-container">
-                            <img id="profilePicPreview" src="" alt="Profile Preview" class="profile-pic-preview" style="display:none;">
+                    <label for="loginUsername" class="form-label">
+                        <i class="fas fa-user"></i> Username
+                    </label>
+                    <input 
+                        type="text" 
+                        id="loginUsername" 
+                        name="loginUsername" 
+                        class="form-input"
+                        placeholder="Enter your username" 
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="loginPassword" class="form-label">
+                        <i class="fas fa-lock"></i> Password
+                    </label>
+                    <div class="password-wrapper">
+                        <input 
+                            type="password" 
+                            id="loginPassword" 
+                            name="loginPassword" 
+                            class="form-input"
+                            placeholder="Enter your password" 
+                            required
+                        >
+                        <span class="password-toggle" onclick="togglePassword('loginPassword', this)">
+                            <i class="fas fa-eye"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Sign In
+                </button>
+            </form>
+
+            <!-- Success Message -->
+            <div id="loginSuccess" class="success-message hidden">
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div id="loginProfilePicContainer"></div>
+                <p class="success-text">Login successful!</p>
+            </div>
+
+            <!-- Auth Switch -->
+            <div class="auth-switch">
+                <span>Don't have an account?</span>
+                <button type="button" class="btn-link" onclick="showRegistration()">
+                    Create Account
+                </button>
+            </div>
+        </div>
+
+        <!-- Registration Form -->
+        <div class="auth-container hidden" id="registerContainer">
+            <div class="auth-header">
+                <h1 class="auth-title">Join StackIt</h1>
+                <p class="auth-subtitle">Create your account to get started</p>
+            </div>
+
+            <!-- Step Indicator -->
+            <div class="step-indicator">
+                <div class="step active" id="stepIndicator1">
+                    <i class="fas fa-user"></i>
+                    <span>Basic Info</span>
+                </div>
+                <div class="step inactive" id="stepIndicator2">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>Details</span>
+                </div>
+            </div>
+
+            <form id="registerForm">
+                <!-- Step 1: Basic Information -->
+                <div id="step1" class="fade-in">
+                    <!-- Profile Picture -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-camera"></i> Profile Picture
+                        </label>
+                        <div class="profile-upload">
+                            <div class="profile-preview" id="profilePreviewContainer">
+                                <img id="profilePreview" src="/placeholder.svg" alt="Profile Preview" style="display:none;">
+                                <div class="profile-placeholder" id="profilePlaceholder">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <input 
+                                    type="file" 
+                                    id="profilePic" 
+                                    name="profilePic" 
+                                    accept="image/*" 
+                                    class="profile-input" 
+                                    onchange="previewProfilePic(event)"
+                                >
+                                <button 
+                                    type="button" 
+                                    class="btn btn-secondary" 
+                                    onclick="document.getElementById('profilePic').click()"
+                                >
+                                    <i class="fas fa-upload"></i>
+                                    Choose Photo
+                                </button>
+                                <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">
+                                    Max 2MB, JPG/PNG only
+                                </p>
+                            </div>
                         </div>
-                        <input type="file" id="profilePic" name="profilePic" accept="image/*" class="profile-pic-input" onchange="previewProfilePic(event)">
-                        <button type="button" class="update-pic-btn" onclick="document.getElementById('profilePic').click()">Select Picture</button>
+                    </div>
+
+                    <!-- Basic Info -->
+                    <div class="form-group">
+                        <label for="name" class="form-label">
+                            <i class="fas fa-id-card"></i> Full Name
+                        </label>
+                        <input 
+                            type="text" 
+                            id="name" 
+                            name="name" 
+                            class="form-input"
+                            placeholder="Enter your full name" 
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="username" class="form-label">
+                            <i class="fas fa-at"></i> Username
+                        </label>
+                        <input 
+                            type="text" 
+                            id="username" 
+                            name="username" 
+                            class="form-input"
+                            placeholder="Choose a unique username" 
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email" class="form-label">
+                            <i class="fas fa-envelope"></i> Email
+                        </label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            class="form-input"
+                            placeholder="Enter your email address" 
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="age" class="form-label">
+                            <i class="fas fa-calendar"></i> Age
+                        </label>
+                        <input 
+                            type="number" 
+                            id="age" 
+                            name="age" 
+                            min="10" 
+                            max="100" 
+                            class="form-input"
+                            placeholder="Enter your age" 
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password" class="form-label">
+                            <i class="fas fa-lock"></i> Password
+                        </label>
+                        <div class="password-wrapper">
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password" 
+                                class="form-input"
+                                placeholder="Create a strong password" 
+                                required
+                            >
+                            <span class="password-toggle" onclick="togglePassword('password', this)">
+                                <i class="fas fa-eye"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmPassword" class="form-label">
+                            <i class="fas fa-lock"></i> Confirm Password
+                        </label>
+                        <div class="password-wrapper">
+                            <input 
+                                type="password" 
+                                id="confirmPassword" 
+                                name="confirmPassword" 
+                                class="form-input"
+                                placeholder="Confirm your password" 
+                                required
+                            >
+                            <span class="password-toggle" onclick="togglePassword('confirmPassword', this)">
+                                <i class="fas fa-eye"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bio" class="form-label">
+                            <i class="fas fa-quote-left"></i> Bio
+                        </label>
+                        <textarea 
+                            id="bio" 
+                            name="bio" 
+                            class="form-input form-textarea"
+                            placeholder="Tell us about yourself (optional)" 
+                            rows="3"
+                        ></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-primary btn-full" onclick="nextStep(1)">
+                            <span>Continue</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="name">Full Name</label>
-                    <input type="text" id="name" name="name" placeholder="Enter your full name" required>
-                </div>
-                <div class="form-group">
-                    <label for="username">Username (Unique ID)</label>
-                    <input type="text" id="username" name="username" placeholder="Create a unique username" required>
-                </div>
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
-                </div>
-                <div class="form-group">
-                    <label for="age">Age</label>
-                    <input type="number" id="age" name="age" min="10" max="100" placeholder="Enter your age" required>
-                </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <div class="password-wrapper">
-                        <input type="password" id="password" name="password" placeholder="Create a password" required>
-                        <span class="toggle-password" onclick="togglePassword('password', this)">👁</span>
+
+                <!-- Step 2: Education/Professional Details -->
+                <div id="step2" class="hidden">
+                    <div class="form-group">
+                        <label for="userType" class="form-label">
+                            <i class="fas fa-user-tag"></i> I am a:
+                        </label>
+                        <select id="userType" name="userType" class="form-input" onchange="showFields(this.value)" required>
+                            <option value="">Select your role</option>
+                            <option value="school">School Student</option>
+                            <option value="college">College Student</option>
+                            <option value="professional">Working Professional</option>
+                        </select>
+                    </div>
+                    
+                    <!-- School Student Fields -->
+                    <div id="schoolFields" class="form-section hidden">
+                        <h3 class="section-title">
+                            <i class="fas fa-school"></i>
+                            School Information
+                        </h3>
+                        <div class="form-group">
+                            <label for="schoolName" class="form-label">School Name</label>
+                            <input 
+                                type="text" 
+                                id="schoolName" 
+                                name="schoolName" 
+                                class="form-input"
+                                placeholder="Enter your school name"
+                            >
+                        </div>
+                        <div class="form-group">
+                            <label for="studentClass" class="form-label">Class/Grade</label>
+                            <input 
+                                type="text" 
+                                id="studentClass" 
+                                name="studentClass" 
+                                class="form-input"
+                                placeholder="e.g., 10th Grade, Class 12"
+                            >
+                        </div>
+                    </div>
+                    
+                    <!-- College Student Fields -->
+                    <div id="collegeFields" class="form-section hidden">
+                        <h3 class="section-title">
+                            <i class="fas fa-university"></i>
+                            College Information
+                        </h3>
+                        <div class="form-group">
+                            <label for="collegeName" class="form-label">College Name</label>
+                            <input 
+                                type="text" 
+                                id="collegeName" 
+                                name="collegeName" 
+                                class="form-input"
+                                placeholder="Enter your college name"
+                            >
+                        </div>
+                        <div class="form-group">
+                            <label for="course" class="form-label">Course</label>
+                            <input 
+                                type="text" 
+                                id="course" 
+                                name="course" 
+                                class="form-input"
+                                placeholder="e.g., Computer Science, Engineering"
+                            >
+                        </div>
+                        <div class="form-group">
+                            <label for="startYear" class="form-label">Start Year</label>
+                            <input 
+                                type="number" 
+                                id="startYear" 
+                                name="startYear" 
+                                min="2000" 
+                                max="2030" 
+                                class="form-input"
+                                placeholder="2020"
+                            >
+                        </div>
+                        <div class="form-group">
+                            <label for="endYear" class="form-label">End Year</label>
+                            <input 
+                                type="number" 
+                                id="endYear" 
+                                name="endYear" 
+                                min="2000" 
+                                max="2030" 
+                                class="form-input"
+                                placeholder="2024"
+                            >
+                        </div>
+                    </div>
+                    
+                    <!-- Professional Fields -->
+                    <div id="professionalFields" class="form-section hidden">
+                        <h3 class="section-title">
+                            <i class="fas fa-briefcase"></i>
+                            Professional Information
+                        </h3>
+                        <div class="form-group">
+                            <label for="companyName" class="form-label">Company Name</label>
+                            <input 
+                                type="text" 
+                                id="companyName" 
+                                name="companyName" 
+                                class="form-input"
+                                placeholder="Where do you work?"
+                            >
+                        </div>
+                        <div class="form-group">
+                            <label for="yearsOfExperience" class="form-label">Years of Experience</label>
+                            <input 
+                                type="number" 
+                                id="yearsOfExperience" 
+                                name="yearsOfExperience" 
+                                min="0" 
+                                max="50" 
+                                class="form-input"
+                                placeholder="0"
+                            >
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="prevStep(2)">
+                            <i class="fas fa-arrow-left"></i>
+                            <span>Back</span>
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-user-plus"></i>
+                            <span>Create Account</span>
+                        </button>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="confirmPassword">Confirm Password</label>
-                    <div class="password-wrapper">
-                        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
-                        <span class="toggle-password" onclick="togglePassword('confirmPassword', this)">👁</span>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="bio">Bio</label>
-                    <textarea id="bio" name="bio" placeholder="Tell us about yourself" rows="3"></textarea>
-                </div>
-                <div class="form-group">
-                    <input type="button" value="Next" onclick="nextStep(1)">
-                </div>
+            </form>
+
+            <!-- Auth Switch -->
+            <div class="auth-switch">
+                <span>Already have an account?</span>
+                <button type="button" class="btn-link" onclick="showLogin()">
+                    Sign In
+                </button>
             </div>
-            <div id="step2" class="hidden">
-                <h3>Step 2: Education/Professional Details</h3>
-                <div class="form-group">
-                    <label for="userType">I am a:</label>
-                    <select id="userType" name="userType" onchange="showFields(this.value)" required>
-                        <option value="">Select an option</option>
-                        <option value="school">School Student</option>
-                        <option value="college">College Student</option>
-                        <option value="professional">Working Professional</option>
-                    </select>
-                </div>
-                
-                <!-- School Student Fields -->
-                <div id="schoolFields" class="hidden">
-                    <div class="form-group">
-                        <label for="schoolName">School Name</label>
-                        <input type="text" id="schoolName" name="schoolName" placeholder="Enter school name">
-                    </div>
-                    <div class="form-group">
-                        <label for="studentClass">Class/Grade</label>
-                        <input type="text" id="studentClass" name="studentClass" placeholder="e.g., 10th Grade">
-                    </div>
-                </div>
-                
-                <!-- College Student Fields -->
-                <div id="collegeFields" class="hidden">
-                    <div class="form-group">
-                        <label for="collegeName">College Name</label>
-                        <input type="text" id="collegeName" name="collegeName" placeholder="Enter college name">
-                    </div>
-                    <div class="form-group">
-                        <label for="course">Course</label>
-                        <input type="text" id="course" name="course" placeholder="e.g., Computer Science">
-                    </div>
-                    <div class="form-group">
-                        <label for="startYear">Start Year</label>
-                        <input type="number" id="startYear" name="startYear" min="2000" max="2030" placeholder="Start year">
-                    </div>
-                    <div class="form-group">
-                        <label for="endYear">End Year</label>
-                        <input type="number" id="endYear" name="endYear" min="2000" max="2030" placeholder="End year">
-                    </div>
-                </div>
-                
-                
-                <div id="professionalFields" class="hidden">
-                    <div class="form-group">
-                        <label for="companyName">Company Name</label>
-                        <input type="text" id="companyName" name="companyName" placeholder="Where you work">
-                    </div>
-                    <div class="form-group">
-                        <label for="yearsOfExperience">Years of Experience</label>
-                        <input type="number" id="yearsOfExperience" name="yearsOfExperience" min="0" max="50" placeholder="Years of experience">
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <input type="button" value="Back" onclick="prevStep(2)">
-                    <input type="submit" value="Register">
-                </div>
-            </div>
-        </form>
-    </div>
+        </div>
+    </main>
 
     <script>
-        
-        function togglePassword(fieldId, el) {
-            const input = document.getElementById(fieldId);
-            if (input.type === 'password') {
-                input.type = 'text';
-                el.innerHTML = '👀';
+        // Theme management
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('stackit-theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeToggle(savedTheme);
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('stackit-theme', newTheme);
+            updateThemeToggle(newTheme);
+        }
+
+        function updateThemeToggle(theme) {
+            const icon = document.getElementById('theme-icon');
+            const text = document.getElementById('theme-text');
+            
+            if (theme === 'dark') {
+                icon.className = 'fas fa-sun';
+                text.textContent = 'Light Mode';
             } else {
-                input.type = 'password';
-                el.innerHTML = '👁';
+                icon.className = 'fas fa-moon';
+                text.textContent = 'Dark Mode';
             }
         }
 
-        
+        // Toggle password visibility
+        function togglePassword(fieldId, el) {
+            const input = document.getElementById(fieldId);
+            const icon = el.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fas fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'fas fa-eye';
+            }
+        }
+
+        // Profile picture preview
         function previewProfilePic(event) {
             const file = event.target.files[0];
-            const previewContainer = document.getElementById('profilePicPreviewContainer');
-            const preview = document.getElementById('profilePicPreview');
+            const preview = document.getElementById('profilePreview');
+            const placeholder = document.getElementById('profilePlaceholder');
             
             if (file) {
-                
+                // Validate file type
                 if (!file.type.startsWith('image/')) {
                     alert('Please select a valid image file.');
                     event.target.value = '';
                     return;
                 }
                 
-               
+                // Validate file size (2MB limit)
                 if (file.size > 2 * 1024 * 1024) {
                     alert('Profile picture must be less than 2MB.');
                     event.target.value = '';
@@ -373,25 +940,122 @@
                 reader.onload = function(e) {
                     preview.src = e.target.result;
                     preview.style.display = 'block';
-                    previewContainer.style.background = '#f8fafc';
+                    placeholder.style.display = 'none';
                 };
                 reader.readAsDataURL(file);
             } else {
                 preview.src = '';
                 preview.style.display = 'none';
-                previewContainer.style.background = '#f8fafc';
+                placeholder.style.display = 'flex';
             }
         }
 
-        // Login form handler with success message and profile pic
+        // Navigation functions
+        function showRegistration() {
+            document.getElementById('loginContainer').classList.add('hidden');
+            document.getElementById('registerContainer').classList.remove('hidden');
+            resetForm();
+        }
+
+        function showLogin() {
+            document.getElementById('registerContainer').classList.add('hidden');
+            document.getElementById('loginContainer').classList.remove('hidden');
+        }
+
+        function resetForm() {
+            document.getElementById('step1').classList.remove('hidden');
+            document.getElementById('step2').classList.add('hidden');
+            updateStepIndicator(1);
+            hideAllFields();
+            document.getElementById('registerForm').reset();
+            previewProfilePic({target:{files:[]}});
+        }
+
+        function updateStepIndicator(currentStep) {
+            const step1 = document.getElementById('stepIndicator1');
+            const step2 = document.getElementById('stepIndicator2');
+            
+            if (currentStep === 1) {
+                step1.className = 'step active';
+                step2.className = 'step inactive';
+            } else if (currentStep === 2) {
+                step1.className = 'step completed';
+                step2.className = 'step active';
+            }
+        }
+
+        function hideAllFields() {
+            document.getElementById('schoolFields').classList.add('hidden');
+            document.getElementById('collegeFields').classList.add('hidden');
+            document.getElementById('professionalFields').classList.add('hidden');
+        }
+
+        function nextStep(current) {
+            if (current === 1) {
+                const required = ['name', 'username', 'email', 'age', 'password', 'confirmPassword'];
+                let valid = true;
+                
+                required.forEach(field => {
+                    const input = document.getElementById(field);
+                    if (!input.value.trim()) {
+                        input.focus();
+                        valid = false;
+                        return;
+                    }
+                });
+                
+                if (!valid) {
+                    alert('Please fill all required fields in Step 1');
+                    return;
+                }
+                
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                
+                if (password !== confirmPassword) {
+                    alert('Passwords do not match.');
+                    document.getElementById('confirmPassword').focus();
+                    return;
+                }
+                
+                document.getElementById('step1').classList.add('hidden');
+                document.getElementById('step2').classList.remove('hidden');
+                document.getElementById('step2').classList.add('fade-in');
+                updateStepIndicator(2);
+            }
+        }
+
+        function prevStep(current) {
+            if (current === 2) {
+                document.getElementById('step2').classList.add('hidden');
+                document.getElementById('step1').classList.remove('hidden');
+                document.getElementById('step1').classList.add('fade-in');
+                updateStepIndicator(1);
+            }
+        }
+
+        function showFields(type) {
+            hideAllFields();
+            if (type === 'school') {
+                document.getElementById('schoolFields').classList.remove('hidden');
+            } else if (type === 'college') {
+                document.getElementById('collegeFields').classList.remove('hidden');
+            } else if (type === 'professional') {
+                document.getElementById('professionalFields').classList.remove('hidden');
+            }
+        }
+
+        // Login form handler
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const username = document.getElementById('loginUsername').value.trim();
             const password = document.getElementById('loginPassword').value.trim();
+            
             if (!username || !password) {
                 alert('Please enter both username and password.');
                 return;
             }
+            
             // Use /api/auth/login endpoint
             fetch('http://192.168.137.1:8080/api/auth/login', {
                 method: 'POST',
@@ -408,24 +1072,92 @@
                 } catch {
                     data = null;
                 }
-               
-                document.getElementById('loginSuccess').classList.remove('hidden');
-               
-                const pic = localStorage.getItem('profilePic_' + username);
-                const picContainer = document.getElementById('loginProfilePicContainer');
-                if (pic) {
-                    picContainer.innerHTML = `<img src="${pic}" alt="Profile" style="width:80px;height:80px;border-radius:50%;border:2.5px solid #2575fc;object-fit:cover;box-shadow:0 2px 8px 0 rgba(31,38,135,0.10);">`;
-                } else {
-                    picContainer.innerHTML = '<div style="width:80px;height:80px;border-radius:50%;border:2.5px solid #2575fc;background:#f8fafc;"></div>';
+
+                // Save username to localStorage for later use
+                localStorage.setItem('stackit_username', username);
+
+                // Try to infer role from response (school, college, professional)
+                let role = '';
+                if (data) {
+                    if (data.schoolName || data.studentClass) role = 'school';
+                    else if (data.collegeName || data.course) role = 'college';
+                    else if (data.companyName || data.yearsOfExperience) role = 'professional';
                 }
-                document.getElementById('loginForm').classList.add('hidden');
-                
+                if (role) {
+                    localStorage.setItem('stackit_role', role);
+                } else {
+                    localStorage.removeItem('stackit_role');
+                }
+
+                // Fetch user profile after login and store in localStorage
+                const baseUrl = 'http://192.168.137.1:8080';
+                const apiBase = baseUrl + '/api/users';
+                let profileData = null;
+                // Try /school/{username}
+                try {
+                    const res = await fetch(`${baseUrl}/school/${encodeURIComponent(username)}`);
+                    if (res.ok) {
+                        profileData = await res.json();
+                    } else {
+                        throw new Error('Not a school user');
+                    }
+                } catch (e) {
+                    // Try /college/{username}
+                    try {
+                        const res = await fetch(`${baseUrl}/college/${encodeURIComponent(username)}`);
+                        if (res.ok) {
+                            profileData = await res.json();
+                        } else {
+                            throw new Error('Not a college user');
+                        }
+                    } catch (e2) {
+                        // Try /api/users/{username}
+                        try {
+                            const res = await fetch(`${apiBase}/${encodeURIComponent(username)}`);
+                            if (res.ok) {
+                                profileData = await res.json();
+                            } else {
+                                throw new Error(`Failed to load profile (Status: ${res.status})`);
+                            }
+                        } catch (e3) {
+                            // Ignore, leave profileData null
+                        }
+                    }
+                }
+                // Fetch email, bio, age from /api/users/profile/{username} (GET)
+                if (profileData) {
+                    try {
+                        const profileRes = await fetch(`${apiBase}/profile/${encodeURIComponent(username)}`);
+                        if (profileRes.ok) {
+                            const extra = await profileRes.json();
+                            if (extra.email) profileData.email = extra.email;
+                            if (extra.bio) profileData.bio = extra.bio;
+                            if (extra.age) profileData.age = extra.age;
+                        }
+                    } catch (e) {
+                        // Ignore
+                    }
+                    // Save profile to localStorage
+                    try {
+                        localStorage.setItem('stackit_profile', JSON.stringify(profileData));
+                    } catch (e) {
+                        // Ignore
+                    }
+                }
+
+                // Print JSON to console on success
                 const loginData = {
                     username: username,
                     loginTime: new Date().toISOString(),
                     ...(data ? { response: data } : {})
                 };
                 console.log('Login Success:', JSON.stringify(loginData, null, 2));
+
+                // Show success message briefly then redirect
+                document.getElementById('loginSuccess').classList.remove('hidden');
+                setTimeout(() => {
+                    window.location.href = 'main.html';
+                }, 1500);
             })
             .catch(error => {
                 alert('Login failed. Please check your credentials or try again.');
@@ -433,72 +1165,11 @@
             });
         });
 
-        function showRegistration() {
-            document.getElementById('login').classList.add('hidden');
-            document.getElementById('register').classList.remove('hidden');
-            resetForm();
-        }
-
-        function resetForm() {
-            document.getElementById('step1').classList.remove('hidden');
-            document.getElementById('step2').classList.add('hidden');
-            hideAllFields();
-            document.getElementById('registerForm').reset();
-            previewProfilePic({target:{files:[]}});
-        }
-
-        function hideAllFields() {
-            document.getElementById('schoolFields').classList.add('hidden');
-            document.getElementById('collegeFields').classList.add('hidden');
-            document.getElementById('professionalFields').classList.add('hidden');
-        }
-
-        function nextStep(current) {
-            if (current === 1) {
-                const required = ['name', 'username', 'email', 'age', 'password', 'confirmPassword'];
-                let valid = true;
-                required.forEach(field => {
-                    if (!document.getElementById(field).value.trim()) {
-                        valid = false;
-                    }
-                });
-                if (!valid) {
-                    alert('Please fill all required fields in Step 1');
-                    return;
-                }
-                const password = document.getElementById('password').value;
-                const confirmPassword = document.getElementById('confirmPassword').value;
-                if (password !== confirmPassword) {
-                    alert('Passwords do not match.');
-                    return;
-                }
-                document.getElementById('step1').classList.add('hidden');
-                document.getElementById('step2').classList.remove('hidden');
-            }
-        }
-
-        function prevStep(current) {
-            if (current === 2) {
-                document.getElementById('step2').classList.add('hidden');
-                document.getElementById('step1').classList.remove('hidden');
-            }
-        }
-
-        function showFields(type) {
-            hideAllFields();
-            if (type === 'school') {
-                document.getElementById('schoolFields').classList.remove('hidden');
-            } else if (type === 'college') {
-                document.getElementById('collegeFields').classList.remove('hidden');
-            } else if (type === 'professional') {
-                document.getElementById('professionalFields').classList.remove('hidden');
-            }
-        }
-
-        
+        // Registration form handler
         document.getElementById('registerForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const userType = document.getElementById('userType').value;
+            
             if (!userType) {
                 alert('Please select your user type');
                 return;
@@ -539,6 +1210,13 @@
                     formData.yearsOfExperience = parseInt(document.getElementById('yearsOfExperience').value);
                 }
 
+                // Save user role to localStorage
+                if (userType) {
+                    localStorage.setItem('stackit_role', userType);
+                } else {
+                    localStorage.removeItem('stackit_role');
+                }
+
                 let endpoint;
                 const baseUrl = 'http://192.168.137.1:8080';
                 if (userType === 'school') endpoint = baseUrl + '/school/register';
@@ -552,8 +1230,15 @@
                     },
                     body: JSON.stringify(formData)
                 })
-                .then(response => {
+                .then(async response => {
                     if (response.ok) {
+                        // Call /api/users/profile/{username} to initialize user profile
+                        try {
+                            await fetch(`http://192.168.137.1:8080/api/users/profile/${encodeURIComponent(formData.username)}`, { method: 'POST' });
+                        } catch (e) {
+                            console.warn('Profile initialization failed:', e);
+                        }
+                        
                         if (formData.profilePic && formData.username) {
                             try {
                                 localStorage.setItem('profilePic_' + formData.username, formData.profilePic);
@@ -561,9 +1246,9 @@
                                 console.warn('Could not save profile picture to localStorage:', e);
                             }
                         }
+                        
                         alert('Registration successful! Please log in.');
-                        document.getElementById('register').classList.add('hidden');
-                        document.getElementById('login').classList.remove('hidden');
+                        showLogin();
                         document.getElementById('registerForm').reset();
                         resetForm();
                     } else {
@@ -575,6 +1260,11 @@
                     alert('Registration failed. Please try again.');
                 });
             });
+        });
+
+        // Initialize theme on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeTheme();
         });
     </script>
 </body>
